@@ -1,0 +1,82 @@
+body{
+    font-family: 'Times New Roman', Times, serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #f0f0f0;
+}
+
+h2{
+    color: #333;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+form{
+    max-width: 600px;
+    width: 100%;
+    padding: 30px;
+    background-color: white;
+    border-radius: 10px; 
+    box-shadow: 0 0 15px rgba(0,0,0,0.1); 
+    display: flex;
+    flex-direction: column;
+}
+
+label{
+    display: block;
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="color"],
+input[list]{
+    width: 100%;
+    padding: 12px;
+    margin-top: 8px;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+input[type="radio"],
+input[type="checkbox"]{
+    margin: 10px 10px 10px 0;
+}
+
+input[type="submit"]{
+    background-color: #4caf4c;
+    color: white;
+    padding: 15px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 25px;
+    font-size: 16px; 
+    width: 100%;
+}
+
+input[type="submit"]:hover{
+    background-color: #45a049;
+}
+
+.alter{
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 6px;
+    text-align: center;
+    width: 600px;
+}
+
+.alter-success{
+    background-color: #d4edda;
+    color: #155724;
+    border: 2px solid #c3e6cd;
+}

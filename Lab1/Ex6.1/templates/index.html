@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Linear Equation</title>
+       <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    </head>
+    <body>
+        <div class="container">
+            <h1>Linear Equation</h1>
+            <p>Equation: y = 5x + 7</p>
+            <p>Given x = {{ x }}</p>
+            <p class="result">y = {{ y }}</p>
+        </div>
+    </body>
+</html>
