@@ -1,45 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <title>Sample Form</title>
-    </head>
-    <body>
+<head>
+    <meta charset="UTF-8">
+    <title>Student Information Form</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h2>Student Information Form</h2> 
+    <form action="" method="post">
+        <label for="username">Username:</label><br>
+        <input type="text" id="username" name="username"><br><br>
 
-        <h2>User Information Form</h2>
+        <label for="password">Password:</label><br>
+        <input type="password" id="password" name="password"><br><br>
 
-        <form action="#" methob="post">
-            <label for="username">Username: </label><br>
-            <input type="text" id="username" name="username"/><br><br>
+        <label>Gender:</label><br>
+        <input type="radio" id="male" name="gender" value="male">
+        <label for="male">Male</label><br>
+        <input type="radio" id="female" name="gender" value="female">
+        <label for="female">Female</label><br>
+        <input type="radio" id="other" name="gender" value="other">
+        <label for="other">Other</label><br><br>
 
-            <label for="password">Password: </label><br>
-            <input type="password" id="password" name="password"/><br><br>
+        <label for="membership">Membership Level:</label><br>
+        <input list="options" id="membership" name="membership">
+        <datalist id="options">
+            <option value="Thành viên Bạch Kim">
+            <option value="Thành viên Vàng">
+            <option value="Thành viên Kim Cương">
+        </datalist><br><br>
 
-            Gender:<br>
-            <input type="radio" id="male" name="gender" value="male"/>
-            <label for="male">Male</label><br>
+        <label for="favcolor">Choose your favorite color:</label><br>
+        <input type="color" id="favcolor" name="favcolor"><br><br>
 
-            <input type="radio" id="female" name="gender" value="female"/>
-            <label for="female">Female</label><br>
+        <input type="checkbox" id="correct" name="correct" value="correct">
+        <label for="correct">Correct</label><br><br>
 
-            <input type="radio" id="other" name="gender" value="other"/>
-            <label for="other">Other</label><br>
+        <input type="submit" value="Submit">
+    </form>
 
-            <label for="membership">Membership Level: </label><br>
-            <input list="Options" id="membership" name="membership"/>
-            <datalist id="Options">
-                <option value="Thành viên Bạc"></option>
-                <option value="Thành viên Vàng"></option>
-                <option value="Thành viên Kim Cương"></option>
-            </datalist><br><br>
 
-            <label for="favcolor">Choose your favorite color:</label><br>
-            <input type="color" id="favcolor" name="favcolor"/><br><br>
-
-            <input type="checkbox" id="correct" name="correct" value="correct"/>
-            <label for="correct">Correct</label><br><br>
-
-            <input type="submit" value="Submit"/>
-        </form>
-    </body>
+    {% if submitted %}
+    <div class="submitted-data">
+        <h3>Submitted Data:</h3>
+        <p><strong>Username:</strong> {{ username }}</p>
+        <p><strong>Password:</strong> {{ password }}</p>
+        <p><strong>Gender:</strong> {{ gender }}</p>
+        <p><strong>Membership Level:</strong> {{ membership }}</p>
+        <p><strong>Favorite Color:</strong> {{ favcolor }}</p>
+        <p><strong>Correct:</strong> {{ 'Yes' if correct else 'No' }}</p>
+    </div>
+    {% endif %}
+</body>
 </html>
