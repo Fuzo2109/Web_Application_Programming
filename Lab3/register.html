@@ -4,36 +4,135 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .form-container {
+            background-color: white;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 400px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="password"],
+        input[type="email"],
+        input[type="date"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 2px solid #1e90ff;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        select {
+            width: 100px;
+            margin-left: 10px;
+        }
+        .date-gender {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        input[type="date"] {
+            width: 150px;
+        }
+        input[type="checkbox"] {
+            margin-right: 5px;
+        }
+        .checkbox-group {
+            margin-bottom: 15px;
+        }
+        textarea {
+            height: 80px;
+            resize: none;
+        }
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+        }
+        input[type="button"],
+        input[type="submit"] {
+            background-color: #1e90ff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 48%;
+        }
+        input[type="button"]:hover,
+        input[type="submit"]:hover {
+            background-color: #4682b4;
+        }
+    </style>
 </head>
 <body>
-    <h1>REGISTER ACCOUNT</h1>
-    <form>
-        <label for="username">Enter username</label><br>
-        <input type="text" id="username" name="username"><br>
-        <label for="password">Enter password:</label><br>
-        <input type="password" id="password" name="password"><br>
-        <label for="email">Enter email address</label><br>
-        <input type="email" id="email" name="email"><br>
-        <label for="dob">Date of birth</label>
-        <input type="date" id="dob" name="dob">
-        <label for="gender">Gender</label>
-        <select id="gender" name="gender">
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-        </select><br>
-        <label>Hobbies</label><br>
-        <input type="checkbox" id="watching" name="hobbies" value="watching">
-        <label for="watching">Watching movies</label>
-        <input type="checkbox" id="playing" name="hobbies" value="playing">
-        <label for="playing">Playing video games</label><br>
-        <input type="checkbox" id="listening" name="hobbies" value="listening">
-        <label for="listening">Listening to music</label><br>
-        <input type="checkbox" id="traveling" name="hobbies" value="traveling">
-        <label for="traveling">Traveling</label><br>
-        <label for="intro">Introduce yourself</label><br>
-        <textarea id="intro" name="intro" rows="4" cols="30">Tell us about yourself...</textarea><br>
-        <input type="button" value="Cancel"><br>
-        <input type="button" value="Register">
-    </form>
+    <div class="form-container">
+        <h1>REGISTER ACCOUNT</h1>
+        <form>
+            <label for="username">Enter username</label>
+            <input type="text" id="username" name="username"><br>
+
+            <label for="password">Enter password</label>
+            <input type="password" id="password" name="password"><br>
+
+            <label for="email">Enter email address</label>
+            <input type="email" id="email" name="email"><br>
+
+            <div class="date-gender">
+                <div>
+                    <label for="dob">Date of birth</label>
+                    <input type="date" id="dob" name="dob">
+                </div>
+                <div>
+                    <label for="gender">Gender</label>
+                    <select id="gender" name="gender">
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                    </select>
+                </div>
+            </div>
+
+            <label>Hobbies</label>
+            <div class="checkbox-group">
+                <input type="checkbox" id="watching" name="hobbies" value="watching">
+                <label for="watching" style="display: inline;">Watching movies</label><br>
+                <input type="checkbox" id="listening" name="hobbies" value="listening">
+                <label for="listening" style="display: inline;">Listening to music</label><br>
+                <input type="checkbox" id="reading" name="hobbies" value="reading">
+                <label for="reading" style="display: inline;">Reading books</label><br>
+                <input type="checkbox" id="traveling" name="hobbies" value="traveling">
+                <label for="traveling" style="display: inline;">Traveling</label><br>
+            </div>
+
+            <label for="intro">Introduce yourself</label>
+            <textarea id="intro" name="intro">Tell us about yourself...</textarea><br>
+
+            <div class="buttons">
+                <input type="button" value="Cancel">
+                <input type="submit" value="Register">
+            </div>
+        </form>
+    </div>
 </body>
 </html>

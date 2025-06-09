@@ -4,16 +4,55 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f0f0f0;
+        }
+        h1 {
+            text-align: left;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+        }
+        input[type="text"],
+        input[type="password"] {
+            width: 300px;
+            padding: 8px;
+            border: 2px solid #0000FF;
+            border-radius: 0;
+            margin-bottom: 15px;
+        }
+        .buttons input {
+            background-color: #0000FF;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            margin-right: 10px;
+        }
+        .buttons input:hover {
+            background-color: #0000CC;
+        }
+    </style>
 </head>
 <body>
     <h1>LOGIN</h1>
     <form>
-        <label for="username">Username:</label><br>
-        <input type="text" id="username" name="username"><br>
-        <label for="password">Password:</label><br>
-        <input type="password" id="password" name="password"><br><br>
-        <input type="button" value="Cancel">
-        <input type="submit" value="Login">
+        <label>Username:</label>
+        <input type="text" name="username"><br>
+
+        <label>Password:</label>
+        <input type="password" name="password"><br>
+
+        <div class="buttons">
+            <input type="button" value="Cancel">
+            <input type="submit" value="Login">
+        </div>
     </form>
 </body>
 </html>
