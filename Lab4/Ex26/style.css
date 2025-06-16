@@ -1,0 +1,15 @@
+.box{
+    height: 2000px;
+}
+
+.header{
+    width: 400px;
+    height: 40px;
+    background-color: #000;
+    position: fixed;
+    top: 0;
+}
+
+.content{
+    margin-top: 60px;
+}
