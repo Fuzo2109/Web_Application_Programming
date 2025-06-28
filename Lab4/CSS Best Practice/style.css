@@ -1,0 +1,20 @@
+
+.button {
+  padding: 10px 20px;
+  font-size: 1.6rem;
+  text-decoration: none;
+  border: 2px solid transparent;
+  transition: background-color 0.3s ease;
+}
+
+.button--primary {
+  background-color: #1b74e4;
+  color: #fff;
+  border-color: #1b74e4;
+}
+
+
+.button:focus, .button:hover {
+  background-color: #1558b0;
+  outline: 2px solid #fff;
+}

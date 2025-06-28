@@ -1,0 +1,25 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+.post-item{
+    width: 500px;
+    border: 1px solid #ccc;
+    margin: 20px;
+}
+img{
+    width: 100%;
+}
+
+.bg-grey{
+    background-color: grey;
+    color: wheat;
+}
+
+h2, p{
+    padding: 10px;
+}
+.mt-top{
+    margin-top: 20px;
+}
