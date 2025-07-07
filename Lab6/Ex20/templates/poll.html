@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Poll</title>
+    <style>
+        body{
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 40px;
+            text-align: center;
+        }
+        .poll-container{
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 500px;
+            margin: auto;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        form{
+            margin-bottom: 20px;
+        }
+        input[type="submit"]{
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: green;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        table{
+            width: 100%;
+            margin-top: 15px;
+            border-collapse: collapse;
+        }
+        th, td{
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        th{
+            background-color: #efefef;
+        }
+    </style>
+</head>
+<body>
+    <div class="poll-container">
+        <h1>Which do you prefer?</h1>
+        <form method="POST">
+            <label><input type="radio" name="animal" value="Lions" required>Lions</label><br><br>
+            <label><input type="radio" name="animal" value="Tigers" required>Tigers</label><br><br>
+            <input type="submit" value="Vote">
+        </form>
+
+        <h2>Poll Results</h2>
+        <table>
+            <tr>
+                <th>Option</th>
+                <th>Votes</th>
+                <th>Percentage</th>
+            </tr>
+            {% for item in results %}
+            <tr>
+                <td>{{ item.option }}</td>
+                <td>{{ item.count }}</td>
+                <td>{{ item.percentage }}%</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</body>
+</html>

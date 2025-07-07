@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temperature Converter</title>
+</head>
+<body>
+    <h1>Temperature Converter</h1>
+    <form method ="POST">
+        <label>Enter Temperature:</label>
+        <input type="text" name="temperature" required><br><br>
+
+        <label>Convert:</label><br>
+        <input type="radio" name="conversion" value="c_to_f" checked>Celsius to Fahrenheit<br>
+        <input type="radio" name="conversion" value="f_to_c">Fahrenheit to Celsius<br><br>
+
+        <input type="submit" value="Convert">
+    </form>
+
+    {%if result%}
+    <h2>Conversion Result: {{result}}</h2>
+    {% endif %}
+</body>
+</html>

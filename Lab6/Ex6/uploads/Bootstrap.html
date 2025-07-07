@@ -1,0 +1,1014 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bootstrap 3 Tutorial</title>
+    <!-- Bootstrap 3 CSS CDN -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Prism.js for syntax highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <!-- jQuery and Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0 auto;
+            max-width: 900px;
+            padding: 20px;
+            color: #000000;
+            background-color: #FFFFFF;
+        }
+        h1, h2, h3 {
+            color: #34C759;
+        }
+        pre {
+            background-color: #F1F1F1;
+            padding: 15px;
+            border: 1px solid #34C759;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin-bottom: 15px;
+        }
+        code {
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .lab-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            border: 2px solid #34C759;
+            display: block;
+            min-height: 100px;
+            overflow: visible;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border-left: 5px solid #34C759;
+            display: block;
+        }
+        .result {
+            background-color: #FFFFFF;
+            border: 1px solid #34C759;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 15px;
+            min-height: 30px;
+            word-wrap: break-word;
+        }
+        .header {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        .logo {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            max-width: 120px;
+            height: auto;
+        }
+        a.sample-link:hover {
+            color: green;
+        }
+        table {
+            display: block;
+            overflow-x: auto;
+            white-space: nowrap;
+            margin-bottom: 15px;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #34C759;
+            padding: 8px;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+        .note {
+            background-color: #e7f3e7;
+            padding: 10px;
+            border-left: 4px solid #34C759;
+            margin-top: 10px;
+        }
+        nav.toc {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        nav.toc ul {
+            list-style: none;
+            padding: 0;
+        }
+        nav.toc li {
+            margin: 5px 0;
+        }
+        nav.toc a {
+            color: #34C759;
+            text-decoration: none;
+        }
+        nav.toc a:hover {
+            text-decoration: underline;
+        }
+        .question {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e7f3e7;
+            border-radius: 8px;
+            border: 1px solid #34C759;
+        }
+        .question h4 {
+            margin: 0 0 15px;
+            font-size: 1.2em;
+            color: #34C759;
+        }
+        .question ol {
+            padding-left: 20px;
+            margin: 0;
+        }
+        .question li {
+            margin-bottom: 10px;
+            font-size: 1em;
+            line-height: 1.5;
+        }
+        .question .answer {
+            font-weight: bold;
+            color: #34C759;
+        }
+        .question .explanation {
+            font-style: italic;
+            color: #555;
+            margin-top: 5px;
+            display: block;
+        }
+        .error {
+            color: red;
+        }
+        button, input {
+            box-sizing: border-box;
+            min-width: 100px;
+            padding: 8px;
+            margin: 5px;
+        }
+        button:focus, input:focus {
+            outline: 2px solid #34C759;
+        }
+        @media (max-width: 600px) {
+            body {
+                padding: 15px;
+                font-size: 16px;
+            }
+            h1, h2, h3 {
+                font-size: 1.5em;
+            }
+            .lab-section {
+                margin-bottom: 20px;
+                padding: 10px;
+                min-height: 50px;
+            }
+            .section {
+                padding: 15px;
+            }
+            .question {
+                padding: 10px;
+            }
+            .question h4 {
+                font-size: 1.1em;
+            }
+            .question li {
+                font-size: 0.95em;
+            }
+            button, input {
+                min-width: 80px;
+            }
+            .logo {
+                top: 10px;
+                right: 10px;
+                max-width: 50px;
+            }
+        }
+    </style>
+    <script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex));
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Bootstrap 3 Tutorial</h1>
+            <p>Van Lang University, Faculty of Information Technology</p>
+            <p>Course: Web Application Programming - Lecturer: Master Nguyen Thai Anh</p>
+            <img src="https://tonkinmedia.vn/wp-content/uploads/2023/03/wiwn8912WI_logo-vhubnew-2.png" alt="Van Lang University Logo" class="logo">
+        </div>
+
+        <!-- Table of Contents -->
+        <nav class="toc">
+            <h2>Table of Contents</h2>
+            <ul>
+                <li><a href="#section0">0. Introduction to Bootstrap</a></li>
+                <li><a href="#section1">1. BS Get Started</a></li>
+                <li><a href="#section2">2. BS Grid Basic</a></li>
+                <li><a href="#section3">3. BS Typography</a></li>
+                <li><a href="#section4">4. BS Tables</a></li>
+                <li><a href="#section5">5. BS Images</a></li>
+                <li><a href="#section6">6. BS Jumbotron</a></li>
+                <li><a href="#section7">7. BS Wells</a></li>
+                <li><a href="#section8">8. BS Alerts</a></li>
+                <li><a href="#section9">9. BS Buttons</a></li>
+                <li><a href="#section10">10. BS Button Groups</a></li>
+                <li><a href="#section11">11. BS Glyphicons</a></li>
+                <li><a href="#section12">12. BS Badges/Labels</a></li>
+                <li><a href="#section13">13. BS Progress Bars</a></li>
+                <li><a href="#section14">14. BS Pagination</a></li>
+                <li><a href="#section15">15. BS Pager</a></li>
+                <li><a href="#section16">16. BS List Groups</a></li>
+                <li><a href="#section17">17. BS Panels</a></li>
+                <li><a href="#section18">18. BS Dropdowns</a></li>
+                <li><a href="#section19">19. BS Collapse</a></li>
+                <li><a href="#section20">20. BS Tabs/Pills</a></li>
+                <li><a href="#section21">21. BS Navbar</a></li>
+                <li><a href="#section22">22. BS Forms</a></li>
+                <li><a href="#section23">23. Conclusion</a></li>
+            </ul>
+        </nav>
+
+        <!-- Section 0: Introduction to Bootstrap -->
+        <div class="lab-section" id="section0">
+            <div class="section">
+                <h2>0. Introduction to Bootstrap</h2>
+                <p><strong>What You’ll Learn:</strong> Understand what Bootstrap is, its role in web development, and its key advantages and limitations.</p>
+                <p><strong>Theory:</strong> Bootstrap, originally developed by Twitter in 2011, is an open-source front-end framework that streamlines the process of building responsive and mobile-first websites. It provides a comprehensive collection of pre-designed CSS and JavaScript components, including grids, buttons, forms, and navigation bars, which allow developers to create consistent, professional-looking interfaces with minimal effort. The framework is built on a 12-column responsive grid system, making it adaptable to various screen sizes, from mobile devices to desktops. Its popularity stems from its ease of use, extensive documentation, and a large community of contributors, making it a go-to choice for both beginners and experienced developers. Companies like NASA, eBay, and Spotify have leveraged Bootstrap to enhance their web presence, showcasing its versatility across industries.</p>
+                <p><strong>Key Features:</strong></p>
+                <ul>
+                    <li><strong>Responsive Grid</strong>: A flexible 12-column layout that adjusts to different screen sizes.</li>
+                    <li><strong>Pre-built Components</strong>: Ready-to-use elements like modals, carousels, and alerts.</li>
+                    <li><strong>Customizability</strong>: Allows developers to override default styles with custom CSS.</li>
+                    <li><strong>Cross-Browser Support</strong>: Ensures compatibility with major browsers like Chrome, Firefox, and Safari.</li>
+                </ul>
+                <p><strong>Why Bootstrap?</strong> It significantly reduces development time, ensures a uniform design language, and is widely supported by a global community, making it ideal for rapid prototyping and large-scale projects.</p>
+                <p><strong>Limitations:</strong> While powerful, Bootstrap may not be the best fit for highly customized designs requiring unique aesthetics, as its default styles can sometimes feel generic. Additionally, for very large applications, it might introduce unnecessary overhead if not optimized properly, and it requires a good understanding of HTML and CSS to fully customize.</p>
+                <div class="note">
+                    <p><strong>Note:</strong> Familiarity with HTML, CSS, and basic JavaScript will greatly enhance your ability to harness Bootstrap’s full potential.</p>
+                </div>
+                <div class="question">
+                    <h4>Quick Quiz</h4>
+                    <ol>
+                        <li>In which year was Bootstrap first released? a) 2009 b) 2011 c) 2013 d) 2015 <span class="answer">Answer: b</span>
+                            <span class="explanation">Bootstrap was released by Twitter in 2011.</span></li>
+                        <li>What is a primary benefit of Bootstrap? a) Server-side rendering b) Responsive design c) Database management d) Backend logic <span class="answer">Answer: c</span>
+                            <span class="explanation">Bootstrap excels at creating responsive, mobile-first websites.</span></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 1: BS Get Started -->
+        <div class="lab-section" id="section1">
+            <div class="section">
+                <h2>1. BS Get Started</h2>
+                <p><strong>What You’ll Learn:</strong> How to set up Bootstrap in a project and configure it effectively.</p>
+                <p><strong>Theory:</strong> To begin using Bootstrap, you need to integrate its core files into your HTML project. This involves linking the Bootstrap CSS file for styling and the JavaScript file for interactive components, both of which rely on jQuery as a dependency. You have two primary options: downloading the framework from the official website [getbootstrap.com](https://getbootstrap.com) and hosting it locally, or utilizing a Content Delivery Network (CDN) for faster loading and easier maintenance. The CDN approach is particularly useful for quick prototyping or small projects, as it eliminates the need to manage file versions manually. Proper setup includes placing the CSS link in the `<head>` section and the JavaScript files just before the `</body>` tag to ensure all DOM elements are loaded before interactivity is applied. This foundational step is critical for leveraging Bootstrap’s full range of features.</p>
+                <h3>Setup Steps</h3>
+                <pre><code>
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+                </code></pre>
+                <p><strong>Real-World Use Case:</strong> Setting up a portfolio website with a responsive layout using a CDN for quick deployment.</p>
+                <div class="note">
+                    <p><strong>Tip:</strong> Always test your setup in multiple browsers to ensure compatibility, and consider using minified versions for production to reduce load times.</p>
+                </div>
+                <div class="question">
+                    <h4>Quick Quiz</h4>
+                    <ol>
+                        <li>Where can you download Bootstrap? a) Stack Overflow b) getbootstrap.com c) Google Drive d) Microsoft Store <span class="answer">Answer: b</span>
+                            <span class="explanation">Bootstrap can be downloaded from getbootstrap.com.</span></li>
+                        <li>What must be loaded before Bootstrap JS? a) Custom CSS b) jQuery c) Font Awesome d) AngularJS <span class="answer">Answer: c</span>
+                            <span class="explanation">jQuery is a prerequisite for Bootstrap’s JavaScript functionality.</span></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: BS Grid Basic -->
+        <div class="lab-section" id="section2">
+            <div class="section">
+                <h2>2. BS Grid Basic</h2>
+                <p><strong>What You’ll Learn:</strong> Creating responsive layouts with the Bootstrap grid system.</p>
+                <p><strong>Theory:</strong> Bootstrap’s grid system is a cornerstone of its responsive design capabilities, built around a 12-column layout that adapts to different screen sizes using a series of containers, rows, and columns. The system relies on a container class (`.container` for fixed-width or `.container-fluid` for full-width) to wrap the grid, with `.row` defining horizontal groups of columns. Columns are created using classes like `.col-xs-`, `.col-sm-`, `.col-md-`, and `.col-lg-`, where the number (e.g., 6) indicates how many of the 12 columns the element should span at that breakpoint. This flexibility allows developers to craft layouts that collapse or expand seamlessly across devices, from mobile phones to large desktops, making it a powerful tool for modern web design.</p>
+                <h3>Example</h3>
+                <pre><code>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">Half width on medium screens</div>
+        <div class="col-md-6">Half width on medium screens</div>
+    </div>
+</div>
+                </code></pre>
+                <p><strong>Real-World Use Case:</strong> Designing a two-column layout for a blog with a sidebar and main content area that adjusts responsively.</p>
+                <div class="note">
+                    <p><strong>Tip:</strong> Ensure the sum of column widths in a row does not exceed 12 to avoid layout issues.</p>
+                </div>
+                <div class="question">
+                    <h4>Quick Quiz</h4>
+                    <ol>
+                        <li>How many columns are in the Bootstrap grid? a) 8 b) 12 c) 16 d) 10 <span class="answer">Answer: b</span>
+                            <span class="explanation">The Bootstrap grid consists of 12 columns.</span></li>
+                        <li>What does `.col-md-4` represent? a) Full width b) One-third width c) Half width d) Quarter width <span class="answer">Answer: c</span>
+                            <span class="explanation">`.col-md-4` spans 4 of 12 columns, or one-third, on medium screens.</span></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3: BS Typography -->
+        <div class="lab-section" id="section3">
+            <div class="section">
+                <h2>3. BS Typography</h2>
+                <p><strong>What You’ll Learn:</strong> Styling text elements with Bootstrap typography classes.</p>
+                <p><strong>Theory:</strong> Bootstrap enhances typography by providing a set of utility classes that allow developers to style text with minimal effort, ensuring consistency across a website. The framework builds on a base font size and line height, offering classes like `.lead` to emphasize key paragraphs, `.text-center`, `.text-left`, and `.text-right` for alignment, and contextual classes such as `.text-muted`, `.text-primary`, `.text-success`, and `.text-danger` for color coding. These classes are designed to work seamlessly with Bootstrap’s grid system, enabling responsive text layouts that adjust based on screen size. This approach saves time and ensures a professional look without extensive custom CSS, though it can be extended with additional styling as needed.</p>
+                <h3>Example</h3>
+                <pre><code>
+<p class="lead">This is a prominent paragraph.</p>
+<p class="text-center">Centered text example</p>
+                </code></pre>
+                <p><strong>Real-World Use Case:</strong> Styling headlines and body text for a news website with consistent alignment and emphasis.</p>
+                <div class="note">
+                    <p><strong>Tip:</strong> Combine `.text-muted` with other classes for subtle secondary text, such as captions or footnotes.</p>
+                </div>
+                <div class="question">
+                    <h4>Quick Quiz</h4>
+                    <ol>
+                        <li>What does `.lead` primarily do? a) Reduces text size b) Emphasizes text c) Aligns text left d) Changes font family <span class="answer">Answer: b</span>
+                            <span class="explanation">`.lead` increases font size and weight to emphasize key content.</span></li>
+                        <li>Which class centers text? a) .text-left b) .text-center c) .text-right d) .text-justify <span class="answer">Answer: d</span>
+                            <span class="explanation">`.text-center` aligns text to the center of its container.</span></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4: BS Tables -->
+        <div class="lab-section" id="section4">
+            <div class="section">
+                <h2>4. BS Tables</h2>
+                <p><strong>What You’ll Learn:</strong> Styling and enhancing tables with Bootstrap.</p>
+                <p><strong>Theory:</strong> Bootstrap transforms plain HTML tables into visually appealing and functional elements through a variety of classes. The base `.table` class applies basic styling such as borders and padding, while additional classes like `.table-striped` add zebra-striping for readability, `.table-bordered` adds full borders, and `.table-hover` enables row highlighting on mouse-over. These features are particularly useful for displaying data in a structured format, such as schedules or inventories, and can be combined to meet specific design needs. The framework ensures tables are responsive by default, collapsing on smaller screens, which is essential for mobile-friendly websites.</p>
+                <h3>Example</h3>
+                <pre><code>
+<table class="table table-striped">
+    <tr><th>Name</th><th>Age</th></tr>
+    <tr><td>John</td><td>25</td></tr>
+    <tr><td>Jane</td><td>30</td></tr>
+</table>
+                </code></pre>
+                <p><strong>Real-World Use Case:</strong> Displaying a product inventory table on an e-commerce site with striped rows for better readability.</p>
+                <div class="note">
+                    <p><strong>Tip:</strong> Use `.table-condensed` to reduce padding for a compact table layout.</p>
+                </div>
+                <div class="question">
+                    <h4>Quick Quiz</h4>
+                    <ol>
+                        <li>What effect does `.table-striped` have? a) Adds borders b) Alternates row colors c) Centers text d) Increases font size <span class="answer">Answer: b</span>
+                            <span class="explanation">`.table-striped` applies a zebra-stripe pattern to rows.</span></li>
+                        <li>Which class adds borders to a table? a) .table-hover b) .table-bordered c) .table-striped d) .table-responsive <span class="answer">Answer: d</span>
+                            <span class="explanation">`.table-bordered` adds borders to all table cells.</span></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 5: BS Images -->
+        <div class="lab-section" id="section5">
+            <div class="section">
+                <h2>5. BS Images</h2>
+                <p><strong>What You’ll Learn:</strong> Making images responsive and adding stylistic effects.</p>
+                <p><strong>Theory:</strong> Bootstrap simplifies image handling with the `.img-responsive` class, which applies `max-width: 100%` and `height: auto` to ensure images scale appropriately within their containers across different devices. Additionally, classes like `.img-rounded`, `.img-circle`, and `.img-thumbnail` provide visual enhancements, such as rounded corners, circular shapes, or a bordered thumbnail effect. This functionality is crucial for creating image galleries, product displays, or profile pictures that maintain aspect ratios and responsiveness, enhancing the user experience on both desktop and mobile platforms.</p>
+                <h3>Example</h3>
+                <pre><code>
+<img src="image.jpg" class="img-responsive img-thumbnail" alt="Responsive thumbnail">
+                </code></pre>
+                <p><strong>Real-World Use Case:</strong> Creating a photo gallery on a portfolio website with thumbnail previews that adapt to screen size.</p>
+                <div class="note">
+                    <p><strong>Tip:</strong> Combine `.img-responsive` with `.img-circle` for profile pictures in a social media layout.</p>
+                </div>
+                <div class="question">
+                    <h4>Quick Quiz</h4>
+                    <ol>
+                        <li>What does `.img-responsive` achieve? a) Fixes image size b) Makes image scalable c) Adds borders d) Changes image color <span class="answer">Answer: c</span>
+                            <span class="explanation">`.img-responsive` ensures images scale with their container.</span></li>
+                        <li>Which class creates a circular image? a) .img-rounded b) .img-circle c) .img-thumbnail d) .img-square <span class="answer">Answer: b</span>
+                            <span class="explanation">`.img-circle` shapes an image into a circle.</span></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 6: BS Jumbotron -->
+        <div class="lab-section" id="section6">
+            <div class="section">
+                <h2>6. BS Jumbotron</h2>
+                <p><strong>What You’ll Learn:</strong> Creating a prominent callout section with Jumbotron.</p>
+                <p><strong>Theory:</strong> The `.jumbotron` class is designed to draw attention to key content, such as welcome messages or promotional banners, by increasing the font size of headings and adding extra padding. It’s ideal for hero sections on homepages or landing pages, providing a large, eye-catching area that can include text, images, or buttons. The component is fully customizable with additional CSS, allowing developers to adjust background colors, text alignment, or padding to match the site’s design theme, making it a versatile tool for highlighting important information.</p>
+                <h3>Example</h3>
+                <pre><code>
+<div class="jumbotron">
+    <h1>Welcome to Bootstrap!</h1>
+    <p>Learn to build responsive websites easily.</p>
+    <p><a class="btn btn-primary btn-lg" href="#" role="button">Get Started</a></p>
+</div>
+                </code></pre>
+                <p><strong>Real-World Use Case:</strong> A homepage hero section for an educational platform announcing a new course.</p>
+                <div class="note">
+                    <p><strong>Tip:</strong> Add a background image or color to the `.jumbotron` for a more striking effect.</p>
+                </div>
+                <div class="question">
+                    <h4>Quick Quiz</h4>
+                    <ol>
+                        <li>What is the purpose of `.jumbotron`? a) Navigation bar b) Callout section c) Table styling d) Footer design <span class="answer">Answer: b</span>
+                            <span class="explanation">`.jumbotron` is used to highlight important content with larger text and padding.</span></li>
+                        <li>Can `.jumbotron` include buttons? a) No b) Yes c) Only images d) Only text <span class="answer">Answer: d</span>
+                            <span class="explanation">`.jumbotron` can include buttons for calls to action.</span></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 7: BS Wells -->
+        <div class="lab-section" id="section7">
+            <div class="section">
+                <h2>7. BS Wells</h2>
+                <p><strong>What You’ll Learn:</strong> Adding inset boxes with the Well component.</p>
+                <p><strong>Theory:</strong> The `.well` class creates a visually distinct, inset box effect with rounded corners and a gray background, ideal for sidebars, widgets, or highlighted content areas. Bootstrap offers size variations with `.well-sm` for smaller boxes and `.well-lg` for larger ones, providing flexibility in design. This component is particularly useful for separating secondary information from the main content, enhancing readability and visual hierarchy on a webpage. While still functional in Bootstrap 3, it has been largely replaced by cards in newer versions, but it remains a simple and effective tool for basic layouts.</p>
+                <h3>Example</h3>
+                <pre><code>
+<div class="well well-lg">This is a large well with inset styling.</div>
+                </code></pre>
+                <p><strong>Real-World Use Case:</strong> A sidebar widget on a blog displaying recent posts with a subtle inset effect.</p>
+                <div class="note">
+                    <p><strong>Tip:</strong> Use `.well-sm` for compact areas like inline alerts or notes.</p>
+                </div>
+                <div class="question">
+                    <h4>Quick Quiz</h4>
+                    <ol>
+                        <li>What does `.well` create? a) A borderless box b) An inset box c) A dropdown d) A table <span class="answer">Answer: b</span>
+                            <span class="explanation">`.well` creates a boxed area with an inset appearance.</span></li>
+                        <li>Which class makes a well smaller? a) .well-lg b) .well-sm c) .well-md d) .well-xl <span class="answer">Answer: c</span>
+                            <span class="explanation">`.well-sm` reduces the size of the well component.</span></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 8: BS Alerts -->
+        <div class="lab-section" id="section8">
+            <div class="section">
+                <h2>8. BS Alerts</h2>
+                <p><strong>What You’ll Learn:</strong> Displaying contextual alert messages.</p>
+                <p><strong>Theory:</strong> Bootstrap alerts are used to provide feedback to users through visually distinct messages, such as success notifications, warnings, or errors. The `.alert` class serves as the base, with contextual variants like `.alert-success` (green for success), `.alert-info` (blue for information), `.alert-warning` (yellow for cautions), and `.alert-danger` (red for errors). The `.alert-dismissible` class, combined with a close button, allows users to dismiss alerts, enhancing interactivity. These components are essential for user interfaces requiring immediate feedback, such as form submissions or system status updates, and can be styled further with custom CSS.</p>
+                <h3>Example</h3>
+                <pre><code>
+<div class="alert alert-warning alert-dismissible" role="alert">
+    <button type="button" class="close" data-dismiss="alert">×</button>
+    Warning: Check your input!
+</div>
+                </code></pre>
+                <p><strong>Real-World Use Case:</strong> Displaying a warning message after a user submits an incomplete form on an e-commerce checkout page.</p>
+                <div class="note">
+                    <p><strong>Tip:</strong> Use `.alert-link` within alerts to style hyperlinks consistently.</p>
+                </div>
+                <div class="question">
+                    <h4>Quick Quiz</h4>
+                    <ol>
+                        <li>What does `.alert-success` indicate? a) Error b) Success c) Information d) Warning <span class="answer">Answer: b</span>
+                            <span class="explanation">`.alert-success` signals a successful action with a green background.</span></li>
+                        <li>Which class adds a close button? a) .alert-dismissible b) .alert-close c) .alert-removable d) .alert-hide <span class="answer">Answer: a</span>
+                            <span class="explanation">`.alert-dismissible` enables a dismissible alert with a close button.</span></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 9: BS Buttons -->
+        <div class="lab-section" id="section9">
+            <div class="section">
+                <h2>9. BS Buttons</h2>
+                <p><strong>What You’ll Learn:</strong> Styling and customizing buttons.</p>
+                <p><strong>Theory:</strong> Bootstrap buttons are styled using the `.btn` class as a foundation, with contextual variations like `.btn-primary` (blue for primary actions), `.btn-success` (green for positive actions), `.btn-warning` (yellow for cautions), and `.btn-danger` (red for critical actions) to convey meaning. Size modifiers such as `.btn-lg`, `.btn-sm`, and `.btn-xs` allow for scalability, while states like `.active`, `.disabled`, and `.btn-block` (full-width) enhance functionality. Buttons are integral to user interfaces, serving as calls to action or navigation triggers, and can be combined with icons or text for richer designs, making them highly versatile across web applications.</p>
+                <h3>Example</h3>
+                <pre><code>
+<button class="btn btn-success btn-lg">Submit</button>
+<button class="btn btn-danger btn-sm" disabled>Delete</button>
+                </code></pre>
+                <p><strong>Real-World Use Case:</strong> A registration form with a prominent “Submit” button and a disabled “Delete” option for user accounts.</p>
+                <div class="note">
+                    <p><strong>Tip:</strong> Use `.btn-block` to make buttons span the full width of their parent container on smaller screens.</p>
+                </div>
+                <div class="question">
+                    <h4>Quick Quiz</h4>
+                    <ol>
+                        <li>What does `.btn-primary` signify? a) Warning b) Primary action c) Success d) Error <span class="answer">Answer: c</span>
+                            <span class="explanation">`.btn-primary` indicates the main call to action, typically in blue.</span></li>
+                        <li>Which class makes a button larger? a) .btn-sm b) .btn-lg c) .btn-xs d) .btn-md <span class="answer">Answer: b</span>
+                            <span class="explanation">`.btn-lg` increases the button’s size for emphasis.</span></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 10: BS Button Groups -->
+        <div class="lab-section" id="section10">
+            <div class="section">
+                <h2>10. BS Button Groups</h2>
+                <p><strong>What You’ll Learn:</strong> Grouping buttons for cohesive controls.</p>
+                <p><strong>Theory:</strong> The `.btn-group` class allows multiple buttons to be grouped together, either horizontally or vertically, to create toolbars or segmented controls. The `.btn-group-vertical` variant stacks buttons vertically, while nesting `.btn-group` within another `.btn-group` enables dropdowns or complex layouts. This feature is particularly useful for designing interactive interfaces like toolbars in text editors or option selectors in forms, ensuring buttons share borders and spacing for a unified appearance. Proper use enhances usability by organizing related actions in a compact space.</p>
+                <h3>Example</h3>
+                <pre><code>
+<div class="btn-group" role="group">
+    <button class="btn btn-default">Left</button>
+    <button class="btn btn-default">Middle</button>
+    <button class="btn btn-default">Right</button>
+</div>
+                </code></pre>
+                <p><strong>Real-World Use Case:</strong> A media player interface with play, pause, and stop buttons grouped together.</p>
+                <div class="note">
+                    <p><strong>Tip:</strong> Add `.btn-group-justified` to make buttons equal width within the group.</p>
+                </div>
+                <div class="question">
+                    <h4>Quick Quiz</h4>
+                    <ol>
+                        <li>What does `.btn-group` do? a) Creates a single button b) Groups buttons c) Styles tables d) Adds alerts <span class="answer">Answer: b</span>
+                            <span class="explanation">`.btn-group` organizes multiple buttons into a single unit.</span></li>
+                        <li>Which class stacks buttons vertically? a) .btn-group-horizontal b) .btn-group-vertical c) .btn-group-stack d) .btn-group-row <span class="answer">Answer: d</span>
+                            <span class="explanation">`.btn-group-vertical` arranges buttons in a vertical stack.</span></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 11: BS Glyphicons -->
+        <div class="lab-section" id="section11">
+            <div class="section">
+                <h2>11. BS Glyphicons</h2>
+                <p><strong>What You’ll Learn:</strong> Integrating icons using Glyphicons.</p>
+                <p><strong>Theory:</strong> Glyphicons are a set of vector icons included with Bootstrap 3, rendered as fonts to allow scaling without loss of quality. They are invoked using the `.glyphicon` class combined with specific icon names (e.g., `.glyphicon-star`, `.glyphicon-search`), requiring no additional files beyond Bootstrap’s CSS. These icons are ideal for enhancing buttons, navigation, or indicators, providing a visual cue that complements text. While Glyphicons are bundled with Bootstrap 3, newer versions have replaced them with other icon libraries like Font Awesome, but they remain a lightweight option for legacy projects.</p>
+                <h3>Example</h3>
+                <pre><code>
+<button class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Search</button>
+                </code></pre>
+                <p><strong>Real-World Use Case:</strong> Adding a search icon to a navigation bar search button.</p>
+                <div class="note">
+                    <p><strong>Tip:</strong> Adjust icon size with custom CSS, as Glyphicons inherit the parent element’s font size.</p>
+                </div>
+                <div class="question">
+                    <h4>Quick Quiz</h4>
+                    <ol>
+                        <li>What are Glyphicons based on? a) Images b) Fonts c) SVGs d) PNGs <span class="answer">Answer: c</span>
+                            <span class="explanation">Glyphicons are font-based icons included in Bootstrap 3.</span></li>
+                        <li>Can Glyphicons be resized? a) No b) Yes, with CSS c) Only manually d) Only with JavaScript <span class="answer">Answer: b</span>
+                            <span class="explanation">Glyphicons can be resized using CSS font-size properties.</span></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 12: BS Badges/Labels -->
+        <div class="lab-section" id="section12">
+            <div class="section">
+                <h2>12. BS Badges/Labels</h2>
+                <p><strong>What You’ll Learn:</strong> Using badges and labels for indicators.</p>
+                <p><strong>Theory:</strong> Bootstrap’s `.badge` and `.label` classes are small, inline elements used to highlight counts, statuses, or tags. The `.badge` class is typically used for numerical indicators (e.g., notification counts), while `.label` serves as a general tag with contextual variants like `.label-success`, `.label-warning`, and `.label-danger`. These components are styled with rounded edges and bold text, making them perfect for dashboards, email clients, or e-commerce sites to display item quantities or categories. Their lightweight nature allows for easy integration into various layouts.</p>
+                <h3>Example</h3>
+                <pre><code>
+<span class="badge">7</span> New Messages
+<span class="label label-info">Update</span>
+                </code></pre>
+                <p><strong>Real-World Use Case:</strong> Showing unread message counts in a social media inbox or product tags in an online store.</p>
+                <div class="note">
+                    <p><strong>Tip:</strong> Use `.label-as-badge` (custom CSS) to style labels like badges if needed.</p>
+                </div>
+                <div class="question">
+                    <h4>Quick Quiz</h4>
+                    <ol>
+                        <li>What is the primary use of `.badge`? a) Text styling b) Numerical counts c) Buttons d) Images <span class="answer">Answer: b</span>
+                            <span class="explanation">`.badge` is designed to display numerical indicators.</span></li>
+                        <li>Which class indicates a warning label? a) .label-success b) .label-warning c) .label-danger d) .label-info <span class="answer">Answer: c</span>
+                            <span class="explanation">`.label-warning` uses yellow to signal a caution.</span></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 13: BS Progress Bars -->
+        <div class="lab-section" id="section13">
+            <div class="section">
+                <h2>13. BS Progress Bars</h2>
+                <p><strong>What You’ll Learn:</strong> Implementing progress indicators.</p>
+                <p><strong>Theory:</strong> Bootstrap progress bars, created with the `.progress` container and `.progress-bar` child element, visually represent the completion status of a task, such as file uploads or form progress. The width of the `.progress-bar` is set via inline CSS (e.g., `style="width: 60%"`) or dynamically with JavaScript. Additional classes like `.progress-bar-striped`, `.progress-bar-animated`, and contextual variants (e.g., `.progress-bar-success`) enhance appearance and meaning. This component is widely used in user interfaces to provide feedback during asynchronous operations, improving user experience by indicating process duration.</p>
+                <h3>Example</h3>
+                <pre><code>
+<div class="progress">
+    <div class="progress-bar progress-bar-success" style="width: 75%"></div>
+</div>
+                </code></pre>
+                <p><strong>Real-World Use Case:</strong> Displaying upload progress for a video file on a media sharing platform.</p>
+                <div class="note">
+                    <p><strong>Tip:</strong> Use `.progress-bar-animated` with JavaScript to create a dynamic effect for ongoing tasks.</p>
+                </div>
+                <div class="question">
+                    <h4>Quick Quiz</h4>
+                    <ol>
+                        <li>What does `.progress-bar` represent? a) A button b) Progress indicator c) Alert d) Table row <span class="answer">Answer: b</span>
+                            <span class="explanation">`.progress-bar` shows the completion percentage of a task.</span></li>
+                        <li>Which class adds stripes to a progress bar? a) .progress-bar-striped b) .progress-bar-animated c) .progress-bar-success d) .progress-bar-bordered <span class="answer">Answer: a</span>
+                            <span class="explanation">`.progress-bar-striped` adds a striped pattern to the bar.</span></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 14: BS Pagination -->
+        <div class="lab-section" id="section14">
+            <div class="section">
+                <h2>14. BS Pagination</h2>
+                <p><strong>What You’ll Learn:</strong> Creating pagination for large content sets.</p>
+                <p><strong>Theory:</strong> The `.pagination` class in Bootstrap creates a numbered navigation system, ideal for paginating long lists like blog posts, search results, or product catalogs. It includes optional `.pagination-lg` or `.pagination-sm` for size variations and `.disabled` or `.active` states to indicate current or unavailable pages. This component enhances user navigation by breaking content into manageable chunks, improving load times and user experience on data-heavy websites. Proper implementation requires linking each page number to the corresponding URL or JavaScript function.</p>
+                <h3>Example</h3>
+                <pre><code>
+<ul class="pagination pagination-lg">
+    <li class="disabled"><a href="#">«</a></li>
+    <li class="active"><a href="#">1</a></li>
+    <li><a href="#">2</a></li>
+    <li><a href="#">3</a></li>
+    <li><a href="#">»</a></li>
+</ul>
+                </code></pre>
+                <p><strong>Real-World Use Case:</strong> Paginating a list of 100 blog articles on a news website.</p>
+                <div class="note">
+                    <p><strong>Tip:</strong> Use `.pagination-centered` (custom CSS) to center the pagination if needed.</p>
+                </div>
+                <div class="question">
+                    <h4>Quick Quiz</h4>
+                    <ol>
+                        <li>What is `.pagination` used for? a) Buttons b) Page navigation c) Progress bars d) Forms <span class="answer">Answer: c</span>
+                            <span class="explanation">`.pagination` provides numbered page navigation.</span></li>
+                        <li>Which class indicates the current page? a) .disabled b) .active c) .hidden d) .selected <span class="answer">Answer: b</span>
+                            <span class="explanation">`.active` highlights the currently selected page.</span></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 15: BS Pager -->
+        <div class="lab-section" id="section15">
+            <div class="section">
+                <h2>15. BS Pager</h2>
+                <p><strong>What You’ll Learn:</strong> Implementing simple next/previous navigation.</p>
+                <p><strong>Theory:</strong> The `.pager` class offers a simplified navigation option with previous and next links, suitable for sequential content like articles or tutorials. It includes `.previous` and `.next` classes to control alignment, and `.disabled` to indicate unavailable navigation options. Unlike `.pagination`, which uses numbered links, `.pager` focuses on basic directional control, making it ideal for single-page applications or content sliders where detailed page numbers are unnecessary. This lightweight component enhances usability with minimal markup.</p>
+                <h3>Example</h3>
+                <pre><code>
+<ul class="pager">
+    <li class="previous"><a href="#">← Previous</a></li>
+    <li class="next"><a href="#">Next →</a></li>
+</ul>
+                </code></pre>
+                <p><strong>Real-World Use Case:</strong> Navigating through a multi-step tutorial on a learning platform.</p>
+                <div class="note">
+                    <p><strong>Tip:</strong> Add custom icons with `.glyphicon` to enhance the visual appeal of `.pager` links.</p>
+                </div>
+                <div class="question">
+                    <h4>Quick Quiz</h4>
+                    <ol>
+                        <li>What is `.pager` designed for? a) Page numbers b) Next/previous links c) Progress tracking d) Tab navigation <span class="answer">Answer: b</span>
+                            <span class="explanation">`.pager` provides simple previous and next navigation.</span></li>
+                        <li>Which class aligns the next link? a) .previous b) .next c) .disabled d) .current <span class="answer">Answer: d</span>
+                            <span class="explanation">`.next` positions the next link to the right.</span></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 16: BS List Groups -->
+        <div class="lab-section" id="section16">
+            <div class="section">
+                <h2>16. BS List Groups</h2>
+                <p><strong>What You’ll Learn:</strong> Styling and enhancing unordered lists.</p>
+                <p><strong>Theory:</strong> The `.list-group` class transforms standard HTML unordered lists into styled, interactive components, with each `.list-group-item` representing a list entry. Additional classes like `.list-group-item-success`, `.list-group-item-warning`, and `.active` add contextual meaning or highlight selected items. This component is highly versatile, supporting badges, links, or even custom content within items, making it suitable for to-do lists, navigation menus, or comment sections. Its responsive nature ensures it adapts well to various screen sizes, enhancing both aesthetics and functionality.</p>
+                <h3>Example</h3>
+                <pre><code>
+<ul class="list-group">
+    <li class="list-group-item">Item 1</li>
+    <li class="list-group-item list-group-item-info">Item 2</li>
+    <li class="list-group-item active">Item 3</li>
+</ul>
+                </code></pre>
+                <p><strong>Real-World Use Case:</strong> A to-do list app with categorized tasks and a selected item indicator.</p>
+                <div class="note">
+                    <p><strong>Tip:</strong> Use `.list-group-item-heading` and `.list-group-item-text` for structured content within items.</p>
+                </div>
+                <div class="question">
+                    <h4>Quick Quiz</h4>
+                    <ol>
+                        <li>What does `.list-group` enhance? a) Tables b) Unordered lists c) Buttons d) Images <span class="answer">Answer: c</span>
+                            <span class="explanation">`.list-group` styles and enhances unordered lists.</span></li>
+                        <li>Which class marks a selected item? a) .list-group-item-success b) .active c) .disabled d) .highlighted <span class="answer">Answer: b</span>
+                            <span class="explanation">`.active` indicates the currently selected list item.</span></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 17: BS Panels -->
+        <div class="lab-section" id="section17">
+            <div class="section">
+                <h2>17. BS Panels</h2>
+                <p><strong>What You’ll Learn:</strong> Creating boxed content areas with panels.</p>
+                <p><strong>Theory:</strong> The `.panel` class, combined with variants like `.panel-default`, `.panel-primary`, or `.panel-danger`, creates a boxed layout with optional headers (`.panel-heading`) and bodies (`.panel-body`) or footers (`.panel-footer`). This component is excellent for organizing content into cards, dashboards, or informational blocks, offering a clear visual separation from the main page layout. Panels can include tables, forms, or other elements, and their customizable nature allows for background colors and padding adjustments, making them a staple for structured presentations in web design.</p>
+                <h3>Example</h3>
+                <pre><code>
+<div class="panel panel-primary">
+    <div class="panel-heading">Panel Header</div>
+    <div class="panel-body">Panel content goes here.</div>
+    <div class="panel-footer">Panel Footer</div>
+</div>
+                </code></pre>
+                <p><strong>Real-World Use Case:</strong> A dashboard panel displaying user statistics with a header and footer.</p>
+                <div class="note">
+                    <p><strong>Tip:</strong> Use `.panel-title` within `.panel-heading` for consistent heading styling.</p>
+                </div>
+                <div class="question">
+                    <h4>Quick Quiz</h4>
+                    <ol>
+                        <li>What does `.panel` create? a) A dropdown b) A boxed section c) A button group d) A navigation bar <span class="answer">Answer: b</span>
+                            <span class="explanation">`.panel` creates a boxed content area with optional headers and footers.</span></li>
+                        <li>Which class adds a blue panel? a) .panel-success b) .panel-primary c) .panel-warning d) .panel-info <span class="answer">Answer: d</span>
+                            <span class="explanation">`.panel-primary` applies a blue theme to the panel.</span></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 18: BS Dropdowns -->
+        <div class="lab-section" id="section18">
+            <div class="section">
+                <h2>18. BS Dropdowns</h2>
+                <p><strong>What You’ll Learn:</strong> Creating dropdown menus with interactivity.</p>
+                <p><strong>Theory:</strong> Bootstrap dropdowns, enabled by the `.dropdown` class and the `data-toggle="dropdown"` attribute, provide a menu that expands on click or hover, requiring Bootstrap’s JavaScript for functionality. The `.dropdown-toggle` class identifies the trigger element, while `.dropdown-menu` contains the list of options. This component is widely used for navigation menus, toolbars, or form controls, offering a space-efficient way to present multiple choices. Customization options include aligning the menu with `.dropdown-menu-right` or adding dividers with `.divider`, enhancing its adaptability.</p>
+                <h3>Example</h3>
+                <pre><code>
+<div class="dropdown">
+    <button class="btn btn-default dropdown-toggle" data-toggle="dropdown">Menu <span class="caret"></span></button>
+    <ul class="dropdown-menu">
+        <li><a href="#">Option 1</a></li>
+        <li><a href="#">Option 2</a></li>
+    </ul>
+</div>
+                </code></pre>
+                <p><strong>Real-World Use Case:</strong> A user profile dropdown in a website header with logout and settings options.</p>
+                <div class="note">
+                    <p><strong>Tip:</strong> Use `.dropdown-header` to add section titles within the menu.</p>
+                </div>
+                <div class="question">
+                    <h4>Quick Quiz</h4>
+                    <ol>
+                        <li>What triggers a `.dropdown`? a) Hover b) Click c) Double-click d) Scroll <span class="answer">Answer: b</span>
+                            <span class="explanation">`.dropdown` is triggered by a click with `data-toggle="dropdown"`.</span></li>
+                        <li>Which class contains dropdown items? a) .dropdown-toggle b) .dropdown-menu c) .dropdown-item d) .dropdown-list <span class="answer">Answer: c</span>
+                            <span class="explanation">`.dropdown-menu` holds the list of dropdown options.</span></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 19: BS Collapse -->
+        <div class="lab-section" id="section19">
+            <div class="section">
+                <h2>19. BS Collapse</h2>
+                <p><strong>What You’ll Learn:</strong> Toggling content visibility with collapse.</p>
+                <p><strong>Theory:</strong> The `.collapse` class, paired with a trigger element using `data-toggle="collapse"` and a target `href` or `data-target`, allows content to expand or collapse on user interaction. This is useful for FAQs, accordions, or detailed sections where space conservation is key. The `.in` class can be added to show content by default, and `.collapse.in` can be toggled with JavaScript or Bootstrap’s built-in functionality. This dynamic behavior enhances user experience by hiding secondary information until needed, making it ideal for educational or informational sites.</p>
+                <h3>Example</h3>
+                <pre><code>
+<a data-toggle="collapse" href="#demo">Toggle Content</a>
+<div id="demo" class="collapse">This content is collapsible.</div>
+                </code></pre>
+                <p><strong>Real-World Use Case:</strong> An FAQ section on a support page where answers collapse until clicked.</p>
+                <div class="note">
+                    <p><strong>Tip:</strong> Use multiple `.collapse` elements with unique IDs for an accordion effect.</p>
+                </div>
+                <div class="question">
+                    <h4>Quick Quiz</h4>
+                    <ol>
+                        <li>What does `.collapse` control? a) Button visibility b) Content visibility c) Image size d) Table rows <span class="answer">Answer: b</span>
+                            <span class="explanation">`.collapse` toggles the visibility of content sections.</span></li>
+                        <li>Which class shows content by default? a) .show b) .in c) .active d) .visible <span class="answer">Answer: c</span>
+                            <span class="explanation">`.in` displays the collapsed content initially.</span></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 20: BS Tabs/Pills -->
+        <div class="lab-section" id="section20">
+            <div class="section">
+                <h2>20. BS Tabs/Pills</h2>
+                <p><strong>What You’ll Learn:</strong> Creating tabbed or pill-based navigation.</p>
+                <p><strong>Theory:</strong> Bootstrap’s `.nav` class, combined with `.nav-tabs` for a tabbed interface or `.nav-pills` for a pill-based one, enables switchable content panels. The `.active` class marks the current tab, and `.tab-content` with `.tab-pane` manages the associated content, requiring Bootstrap JS for interactivity. This component is excellent for dashboards, profiles, or multi-section forms, allowing users to navigate between related content efficiently. Customization options include stacking tabs vertically with `.nav-stacked` or adding justification with `.nav-justified`.</p>
+                <h3>Example</h3>
+                <pre><code>
+<ul class="nav nav-pills">
+    <li class="active"><a data-toggle="pill" href="#home">Home</a></li>
+    <li><a data-toggle="pill" href="#menu">Menu</a></li>
+</ul>
+<div class="tab-content">
+    <div id="home" class="tab-pane fade in active">Home content</div>
+    <div id="menu" class="tab-pane fade">Menu content</div>
+</div>
+                </code></pre>
+                <p><strong>Real-World Use Case:</strong> A user profile page with tabs for personal info, settings, and activity.</p>
+                <div class="note">
+                    <p><strong>Tip:</strong> Use `.nav-stacked` to stack pills vertically for a sidebar layout.</p>
+                </div>
+                <div class="question">
+                    <h4>Quick Quiz</h4>
+                    <ol>
+                        <li>What does `.nav-tabs` create? a) Buttons b) Tabbed navigation c) Dropdowns d) Progress bars <span class="answer">Answer: b</span>
+                            <span class="explanation">`.nav-tabs` creates a tabbed navigation interface.</span></li>
+                        <li>Which class holds tab content? a) .nav-pills b) .tab-content c) .tab-pane d) .nav-tabs <span class="answer">Answer: d</span>
+                            <span class="explanation">`.tab-content` contains the content panels for tabs.</span></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 21: BS Navbar -->
+        <div class="lab-section" id="section21">
+            <div class="section">
+                <h2>21. BS Navbar</h2>
+                <p><strong>What You’ll Learn:</strong> Building responsive navigation bars.</p>
+                <p><strong>Theory:</strong> The `.navbar` class, often paired with `.navbar-default` or `.navbar-inverse`, creates a responsive navigation header that collapses into a menu on smaller screens, triggered by a hamburger icon. Key components include `.navbar-header` for branding, `.navbar-nav` for links, and `.navbar-toggle` for the collapse button. This structure is essential for websites requiring a consistent top navigation, adapting seamlessly from desktop to mobile views. Customization with colors, alignment, and additional elements like forms or buttons makes it a foundational element for modern web design.</p>
+                <h3>Example</h3>
+                <pre><code>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Brand</a>
+        </div>
+        <div class="collapse navbar-collapse" id="myNavbar">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="#">Home</a></li>
+                <li><a href="#">About</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+                </code></pre>
+                <p><strong>Real-World Use Case:</strong> A website header with a collapsible menu for a corporate site.</p>
+                <div class="note">
+                    <p><strong>Tip:</strong> Use `.navbar-fixed-top` to fix the navbar at the top of the page.</p>
+                </div>
+                <div class="question">
+                    <h4>Quick Quiz</h4>
+                    <ol>
+                        <li>What does `.navbar` create? a) Footer b) Navigation bar c) Sidebar d) Header image <span class="answer">Answer: c</span>
+                            <span class="explanation">`.navbar` creates a responsive navigation bar.</span></li>
+                        <li>Which class triggers the collapse menu? a) .navbar-toggle b) .navbar-nav c) .navbar-header d) .navbar-link <span class="answer">Answer: a</span>
+                            <span class="explanation">`.navbar-toggle` activates the collapsible menu on small screens.</span></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 22: BS Forms -->
+        <div class="lab-section" id="section22">
+            <div class="section">
+                <h2>22. BS Forms</h2>
+                <p><strong>What You’ll Learn:</strong> Styling and structuring forms with Bootstrap.</p>
+                <p><strong>Theory:</strong> Bootstrap forms are styled using `.form-group` to group labels and controls, with `.form-control` applying consistent styling to inputs, selects, and textareas. Layout options include `.form-inline` for horizontal forms, `.form-horizontal` with `.row` and `.col-` for grid-based alignment, and `.form-group-lg` or `.form-group-sm` for size variations. This system ensures forms are responsive, accessible, and visually appealing, making them suitable for login pages, contact forms, or surveys. Additional classes like `.has-success` or `.has-error` provide feedback on input validation.</p>
+                <h3>Example</h3>
+                <pre><code>
+<form class="form-horizontal">
+    <div class="form-group">
+        <label class="control-label col-sm-2" for="email">Email:</label>
+        <div class="col-sm-10">
+            <input type="email" class="form-control" id="email" placeholder="Enter email">
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+                </code></pre>
+                <p><strong>Real-World Use Case:</strong> A contact form on a business website with horizontal layout and validation feedback.</p>
+                <div class="note">
+                    <p><strong>Tip:</strong> Use `.form-inline` for single-line forms like search bars.</p>
+                </div>
+                <div class="question">
+                    <h4>Quick Quiz</h4>
+                    <ol>
+                        <li>What does `.form-control` style? a) Buttons b) Inputs c) Alerts d) Tables <span class="answer">Answer: b</span>
+                            <span class="explanation">`.form-control` styles form input elements consistently.</span></li>
+                        <li>Which class aligns forms horizontally? a) .form-inline b) .form-horizontal c) .form-group d) .form-vertical <span class="answer">Answer: d</span>
+                            <span class="explanation">`.form-horizontal` uses a grid for horizontal form layout.</span></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 23: Conclusion -->
+        <div class="lab-section" id="section23">
+            <div class="section">
+                <h2>23. Conclusion</h2>
+                <p><strong>Summary:</strong> Bootstrap 3 provides a robust toolkit for building responsive, mobile-first websites with its grid system, pre-designed components, and extensive customization options. From navigation bars to forms, it offers a consistent foundation that accelerates development while maintaining professional quality.</p>
+                <p><strong>Practice:</strong> Create a webpage featuring a navbar, a two-column grid layout, a form, and a few buttons to reinforce your understanding.</p>
+                <p><strong>Next Steps:</strong> Explore Bootstrap 4 or 5 to learn about updated features like cards and improved grid systems.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

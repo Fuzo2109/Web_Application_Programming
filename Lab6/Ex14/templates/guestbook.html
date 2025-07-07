@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guestbook</title>
+    <style>
+        body{
+            font-family: Arial, sans-serif;
+            background-color: white;
+            padding: 40px;
+        }
+        .coutainer{
+            background-color: #f9f9f9;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 600px;
+            margin: auto;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        h1{
+            text-align: center;
+        }
+        form input, form textarea{
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+        .message{
+            background-color: #eef;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+
+        .message strong{
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="coutainer">
+        <h1>Guestbook</h1>
+        <form method="POST">
+            <input type="text" name="name" placeholder="Your name" required>
+            <textarea name="message" placeholder="Your message..." required></textarea>
+            <input type="submit" value="Add Message">
+        </form>
+
+        {%for msg in messages %}
+        <div class="message">
+            <strong>{{ msg.name }}:</strong>{{ msg.message}}
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

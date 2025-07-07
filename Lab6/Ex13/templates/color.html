@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Color Changer</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            background-color: {{ color}};
+        }
+
+        .box {
+            background-color: #ffffff;
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            text-align: center;
+            width: 400px;
+        }
+
+        .box h1 {
+            margin-bottom: 20px;
+        }
+
+        .box input[type="text"] {
+            padding: 10px;
+            width: 70%;
+            font-size: 16px;
+        }
+
+        .box input[type="submit"] {
+            padding: 10px 20px;
+            margin-left: 10px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h1>Change Background Color</h1>
+        <form method="POST">
+            <input type="text" name="color" placeholder="e.g. red, #FF0000, lightblue" required>
+            <input type="submit" value="Apply">
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Randokm Quote</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            text-align: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .quote-box {
+            max-width: 600px;
+            text-align: center;
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        .quote-box h2 {
+            font-size: 24px;
+            color: #333;
+        }
+        .quote-box button{
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .quote-box button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="quote-box">
+        <h2>{{ quote }}</h2>
+        <form method="GET" action="/quote">
+            <button type="submit">Get New Quote</button>
+        </form>
+</body>
+</html>

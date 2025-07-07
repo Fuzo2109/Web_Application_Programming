@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Thêm/Sửa sinh viên</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h2>{{ student and 'Cập nhật thông tin' or 'Thêm sinh viên' }}</h2>
+    <form method="post">
+        <input type="text" name="name" placeholder="Tên sinh viên" value="{{ student.name if student else '' }}" required>
+        <input type="number" name="age" placeholder="Tuổi" value="{{ student.age if student else '' }}" required>
+        <input type="text" name="major" placeholder="Chuyên ngành" value="{{ student.major if student else '' }}" required>
+        <button type="submit" class="btn submit">Lưu</button>
+    </form>
+    <a href="{{ url_for('index') }}" class="btn cancel">Quay lại</a>
+</body>
+</html>

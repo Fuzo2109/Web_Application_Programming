@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book List</title>
+    <style>
+        body{
+            font-family: Arial, sans-serif;
+            background-color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        .container{
+            background-color: white;
+            max-width: 600px;
+            margin: auto;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        input[type="text"]{
+            padding: 10px;
+            width: 45%;
+            margin-bottom: 10px;
+        }
+        input[type="submit"]{
+            padding: 10px 20px;
+            background-color: green;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        table{
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+        table, th, td{
+            border: 1px solid #ddd;
+        }
+        th, td{
+            padding: 10px;
+        }
+        th{
+            background-color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Book List</h1>
+        <form method="POST">
+            <input type="text" name="title" placeholder="Book Title" required>
+            <input type="text" name="author" placeholder="Author Name" required>
+            <input type="submit" value="Add Book">
+        </form>
+
+        <table>
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+            </tr>
+            {% for book in books %}
+            <tr>
+                <td>{{ book.title }}</td>
+                <td>{{ book.author }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</body>
+</html>
