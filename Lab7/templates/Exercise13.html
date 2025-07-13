@@ -1,0 +1,6 @@
+<h1>Excellent Students (GPA ≥ 8)</h1>
+<ul>
+  {% for s in students %}
+    <li>{{ s.name }} - GPA: {{ s.gpa }}</li>
+  {% endfor %}
+</ul>

@@ -1,0 +1,15 @@
+<h1>Filter by Major</h1>
+<form method="GET" action="/filter/major">
+  <select name="major">
+    <option value="IT">IT</option>
+    <option value="Business">Business</option>
+    <option value="Design">Design</option>
+  </select>
+  <button type="submit">Filter</button>
+</form>
+
+<ul>
+  {% for s in students %}
+    <li>{{ s.name }} - {{ s.major }}</li>
+  {% endfor %}
+</ul>

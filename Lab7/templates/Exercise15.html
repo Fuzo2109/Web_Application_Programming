@@ -1,0 +1,12 @@
+<h1>Filter by Age</h1>
+<form method="GET" action="/age-range">
+  <label>Min Age: <input name="min" type="number"></label>
+  <label>Max Age: <input name="max" type="number"></label>
+  <button type="submit">Filter</button>
+</form>
+
+<ul>
+  {% for s in students %}
+    <li>{{ s.name }} - {{ s.age }}</li>
+  {% endfor %}
+</ul>
