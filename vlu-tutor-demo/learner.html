@@ -1,0 +1,1435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learner Dashboard - VLU Tutor System</title>
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/learner-theme.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { background: #f8fafc; }
+        .header-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #fff;
+            padding: 0 32px;
+            height: 68px;
+            box-shadow: 0 2px 12px rgba(33,150,243,0.06);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+        .header-logo {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: var(--main-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1.7rem;
+            font-weight: bold;
+        }
+        .header-student {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: #1976d2;
+        }
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+        .header-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #e3f2fd;
+        }
+        .header-notify {
+            font-size: 1.5rem;
+            color: #1976d2;
+            background: #e3f2fd;
+            border-radius: 50%;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+        }
+        .header-profile {
+            position: relative;
+        }
+        .profile-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 54px;
+            background: #fff;
+            box-shadow: 0 4px 24px rgba(33,150,243,0.13);
+            border-radius: 12px;
+            min-width: 180px;
+            z-index: 100;
+        }
+        .profile-menu.active {
+            display: block;
+        }
+        .profile-menu a {
+            display: block;
+            padding: 12px 18px;
+            color: #1976d2;
+            text-decoration: none;
+            font-weight: 500;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .profile-menu a:last-child {
+            border-bottom: none;
+        }
+        .profile-menu a:hover {
+            background: #e3f2fd;
+        }
+        .sidebar {
+            width: 220px;
+            background: #fff;
+            box-shadow: 2px 0 12px rgba(0,0,0,0.06);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 32px 0 0 0;
+            min-height: 100vh;
+        }
+        .sidebar-menu {
+            width: 100%;
+            margin-top: 24px;
+        }
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 32px;
+            color: #333;
+            text-decoration: none;
+            font-size: 1.08rem;
+            font-weight: 500;
+            border-left: 4px solid transparent;
+            border-radius: 0 18px 18px 0;
+            margin-bottom: 4px;
+            letter-spacing: 0.2px;
+            transition: background 0.18s, color 0.18s, border-left 0.18s;
+        }
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background: linear-gradient(90deg, #e3f2fd 60%, #f8fafc 100%);
+            color: var(--main-color);
+            border-left: 4px solid var(--main-color);
+        }
+        .sidebar-menu i {
+            font-size: 1.25rem;
+        }
+        .main-content {
+            flex: 1;
+            padding: 0 0 0 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .dashboard-section {
+            max-width: 1200px;
+            margin: 32px auto 0 auto;
+            padding: 0 24px;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        .stat-card {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 2px 12px rgba(33,150,243,0.07);
+            padding: 32px 24px 24px 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 12px;
+            transition: box-shadow 0.18s;
+        }
+        .stat-card .stat-icon {
+            font-size: 2.2rem;
+            color: var(--main-color);
+            background: #e3f2fd;
+            border-radius: 12px;
+            padding: 10px;
+            margin-bottom: 8px;
+        }
+        .stat-value {
+            font-size: 2.1rem;
+            font-weight: bold;
+            color: var(--main-color);
+        }
+        .stat-label {
+            font-size: 1rem;
+            color: #666;
+            font-weight: 500;
+        }
+        .calendar-section {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 2px 12px rgba(33,150,243,0.07);
+            padding: 28px 24px 24px 24px;
+            margin-bottom: 32px;
+        }
+        .calendar-title {
+            font-size: 1.18rem;
+            font-weight: 600;
+            color: var(--main-color);
+            margin-bottom: 18px;
+        }
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 12px;
+        }
+        .calendar-day {
+            background: #f8fafc;
+            border: 2px solid #e3f2fd;
+            border-radius: 10px;
+            min-height: 120px;
+            padding: 10px 6px 18px 6px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .calendar-day-label {
+            font-weight: 700;
+            color: #1976d2;
+            margin-bottom: 10px;
+            font-size: 1.08rem;
+            text-align: center;
+            width: 100%;
+        }
+        .calendar-event {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(33,150,243,0.10);
+            padding: 8px 10px;
+            margin-bottom: 8px;
+            width: 100%;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: box-shadow 0.18s, transform 0.18s;
+        }
+        .calendar-event:hover {
+            box-shadow: 0 4px 16px rgba(33,150,243,0.15);
+            transform: translateY(-1px);
+        }
+        .upcoming-section {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 2px 12px rgba(33,150,243,0.07);
+            padding: 28px 24px 24px 24px;
+            margin-bottom: 32px;
+        }
+        .upcoming-title {
+            font-size: 1.18rem;
+            font-weight: 600;
+            color: var(--main-color);
+            margin-bottom: 18px;
+        }
+        .lesson-card {
+            background: #f8fafc;
+            border-radius: 14px;
+            box-shadow: 0 2px 8px rgba(33,150,243,0.06);
+            padding: 18px 20px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            transition: box-shadow 0.18s;
+        }
+        .lesson-main {
+            display: flex;
+            align-items: flex-start;
+            gap: 18px;
+            flex: 1;
+        }
+        .subject-img {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            object-fit: cover;
+            background: #e3f2fd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--main-color);
+            font-size: 1.5rem;
+        }
+        .lesson-info {
+            flex: 1;
+        }
+        .lesson-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 4px;
+        }
+        .lesson-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--main-color);
+        }
+        .lesson-badge {
+            background: #e3f2fd;
+            color: var(--main-color);
+            border-radius: 12px;
+            padding: 2px 8px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        .lesson-badge.today {
+            background: var(--main-color);
+            color: #fff;
+        }
+        .lesson-time {
+            font-size: 0.95rem;
+            color: #666;
+            margin-bottom: 4px;
+        }
+        .lesson-tutor {
+            font-size: 0.9rem;
+            color: #888;
+        }
+        .lesson-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            align-items: flex-end;
+        }
+        .register-btn, .reschedule-btn {
+            padding: 8px 18px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background-color 0.18s;
+            min-width: 100px;
+        }
+        .register-btn {
+            background: var(--main-color);
+            color: #fff;
+        }
+        .register-btn:hover {
+            background: #1976d2;
+        }
+        .reschedule-btn {
+            background: #ff9800;
+            color: #fff;
+        }
+        .reschedule-btn:hover {
+            background: #f57c00;
+        }
+        @media (max-width: 900px) {
+            .dashboard-section { padding: 0 8px; }
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+            .calendar-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 600px) {
+            .sidebar { width: 60px; padding: 12px 0; }
+            .sidebar-menu a { padding: 10px 10px; font-size: 0.95rem; }
+            .sidebar-menu a span { display: none; }
+            .main-content { padding: 0; }
+            .dashboard-section { padding: 0 2px; }
+            .header-bar { padding: 0 8px; }
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.25);
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background: #fff;
+            border-radius: 18px;
+            padding: 32px 28px 24px 28px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 4px 32px rgba(33,150,243,0.13);
+            min-width: 60vh;
+            min-height: 70vh;
+        }
+        .modal-header {
+            margin-bottom: 20px;
+        }
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--main-color);
+            margin: 0;
+        }
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #999;
+            cursor: pointer;
+        }
+        .modal-close:hover {
+            color: #333;
+        }
+        @media (max-width: 700px) {
+            .modal-content {
+                max-width: 98vw;
+                padding: 18px 6vw 18px 6vw;
+            }
+        }
+        .timeline-section {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 2px 12px rgba(33,150,243,0.07);
+            padding: 32px 24px 24px 24px;
+            margin-bottom: 32px;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .timeline-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--main-color);
+            margin-bottom: 24px;
+            text-align: center;
+        }
+        .timeline-list {
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+        .timeline-day {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 18px 18px 12px 18px;
+            box-shadow: 0 2px 8px rgba(33,150,243,0.04);
+        }
+        .timeline-day-label {
+            font-weight: 600;
+            color: #1976d2;
+            font-size: 1.08rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .timeline-lessons {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .timeline-lesson-card {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(33,150,243,0.07);
+            padding: 16px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 0;
+            border-left: 5px solid #2196f3;
+        }
+        .timeline-lesson-card.empty {
+            color: #bbb;
+            text-align: center;
+            font-style: italic;
+        }
+        .timeline-lesson-card .lesson-main {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+        .timeline-lesson-card .subject-img {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            background: #e3f2fd;
+            color: var(--main-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+        }
+        .timeline-lesson-card .lesson-info {
+            flex: 1;
+        }
+        .timeline-lesson-card .lesson-title {
+            font-weight: 600;
+            color: var(--main-color);
+            font-size: 1.08rem;
+        }
+        .timeline-lesson-card .lesson-time, .timeline-lesson-card .lesson-tutor {
+            color: #666;
+            font-size: 0.97rem;
+            margin-top: 2px;
+        }
+        .timeline-lesson-card .lesson-status {
+            font-size: 1rem;
+            margin-left: 12px;
+        }
+        @media (max-width: 700px) {
+            .timeline-section { padding: 12px 2vw; }
+            .timeline-day { padding: 10px 4px 8px 8px; }
+            .timeline-lesson-card { padding: 10px 6px; }
+            .timeline-title { font-size: 1.08rem; }
+        }
+        .lesson-card-modern {
+            background: #e3f2fd;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(33,150,243,0.10);
+            padding: 10px 10px 12px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 2px;
+            min-width: 120px;
+        }
+        .lesson-card-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            color: #1976d2;
+            font-size: 1.08rem;
+        }
+        .lesson-card-icon {
+            font-size: 1.25rem;
+            color: #2196f3;
+        }
+        .lesson-card-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 4px;
+        }
+        .join-btn-modern {
+            background: #2196f3;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 5px 14px;
+            font-size: 0.98rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.18s;
+        }
+        .join-btn-modern:hover { background: #1976d2; }
+        .reschedule-btn-modern {
+            background: #ffe082;
+            color: #b11f24;
+            border: none;
+            border-radius: 6px;
+            padding: 5px 14px;
+            font-size: 0.98rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.18s;
+        }
+        .reschedule-btn-modern:hover { background: #ffecb3; color: #b11f24; }
+        .lesson-note-cell {
+            color: #b11f24;
+            font-size: 0.98rem;
+            font-style: italic;
+            padding: 6px 2px;
+        }
+        /* Modal styles */
+        .modal-reschedule-bg {
+            position: fixed; left: 0; top: 0; width: 100vw; height: 100vh;
+            background: rgba(33,150,243,0.13); z-index: 1000;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .modal-reschedule {
+            background: #fff; border-radius: 16px; box-shadow: 0 4px 32px rgba(33,150,243,0.18);
+            padding: 32px 28px 24px 28px; min-width: 340px; max-width: 95vw;
+            display: flex; flex-direction: column; gap: 14px; align-items: stretch;
+        }
+        .modal-reschedule-title {
+            font-size: 1.18rem; font-weight: 700; color: #1976d2; margin-bottom: 2px;
+        }
+        .modal-reschedule-info { color: #333; font-size: 1.02rem; margin-bottom: 2px; }
+        .modal-reschedule-textarea {
+            min-height: 60px; border-radius: 8px; border: 1.5px solid #e3e3e3; padding: 8px; font-size: 1rem; resize: vertical;
+        }
+        .modal-reschedule-actions { display: flex; gap: 12px; margin-top: 6px; }
+        .modal-btn {
+            background: #2196f3; color: #fff; border: none; border-radius: 6px; padding: 7px 18px; font-size: 1rem; font-weight: 500; cursor: pointer;
+        }
+        .modal-btn.cancel { background: #b11f24; }
+        .modal-btn.cancel:hover { background: #8d181e; }
+        .modal-btn:hover { background: #1976d2; }
+        .modal-reschedule-msg { color: #43a047; font-size: 1rem; margin-top: 6px; font-weight: 500; }
+    </style>
+</head>
+<body>
+    <div class="header-bar">
+        <div class="header-left">
+            <div class="header-logo"><i class="fas fa-graduation-cap"></i></div>
+            <div class="header-student">Nguyen Van A</div>
+        </div>
+        <div class="header-right">
+            <div class="header-notify" title="Notifications"><i class="fas fa-bell"></i></div>
+            <div class="header-profile">
+                <img src="images/tutor1.jpg" alt="Avatar" class="header-avatar" onclick="toggleProfileMenu()">
+                <div class="profile-menu" id="profileMenu">
+                    <a href="#profile">Profile</a>
+                    <a href="#settings">Settings</a>
+                    <a href="#logout">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="display: flex;">
+        <div class="sidebar">
+            <div class="user-info">
+                <div class="user-logo"><i class="fas fa-user-graduate"></i></div>
+                <div class="user-name">Nguyen Van A</div>
+                <div class="user-id">Student ID: 12345678</div>
+            </div>
+            <div class="sidebar-menu">
+                <a href="#dashboard" class="active"><i class="fas fa-home"></i><span>Dashboard</span></a>
+                <a href="#apply-tutor"><i class="fas fa-chalkboard-teacher"></i><span>Apply as Tutor</span></a>
+                <a href="#find-lesson"><i class="fas fa-search"></i><span>Find Lesson</span></a>
+                <a href="#my-schedule"><i class="fas fa-calendar-alt"></i><span>My Schedule</span></a>
+                <a href="#profile"><i class="fas fa-user"></i><span>Profile</span></a>
+                <a href="#logout"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
+            </div>
+        </div>
+        <div class="main-content">
+            <div class="dashboard-section" id="learnerMainContent">
+                <!-- Dynamic content will be rendered here -->
+            </div>
+                </div>
+                                    </div>
+
+    <!-- Modal for Apply as Tutor -->
+    <div id="applyTutorModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Apply as Tutor</h2>
+                <button class="modal-close" onclick="closeApplyTutorModal()">×</button>
+                                    </div>
+            <form id="tutorApplyForm">
+                <div class="form-group">
+                    <label>GPA:</label>
+                    <input type="number" step="0.01" min="0" max="4" name="gpa" required>
+                                </div>
+                <div class="form-group">
+                    <label>Subjects you can teach:</label>
+                    <select name="subjects" multiple required style="min-height: 120px; height: auto; overflow-y: auto;">
+                        <option value="math">Mathematics</option>
+                        <option value="physics">Physics</option>
+                        <option value="chemistry">Chemistry</option>
+                        <option value="english">English</option>
+                        <option value="cs">Computer Science</option>
+                        <option value="biology">Biology</option>
+                        <option value="economics">Economics</option>
+                    </select>
+                            </div>
+                <div class="form-group">
+                    <label>Certificates:</label>
+                    <div id="certificates-section"></div>
+                    <button type="button" id="addCertificateBtn" class="btn btn-secondary" style="margin-top:8px;">Add Certificate</button>
+                            </div>
+                <div class="form-group">
+                    <label>Additional Description:</label>
+                    <textarea name="description" rows="3" required></textarea>
+                                    </div>
+                <div id="tutorApplyMsg" style="margin-bottom:10px;color:#43a047;font-weight:600;"></div>
+                <div style="display: flex; justify-content: flex-end; gap: 12px;">
+                    <button type="button" class="btn btn-secondary" onclick="closeApplyTutorModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Submit Application</button>
+                                    </div>
+            </form>
+                                </div>
+                            </div>
+
+    <!-- Modal for Find Lesson -->
+    <div id="findLessonModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Find Lesson</h2>
+                <button class="modal-close" onclick="closeFindLessonModal()">×</button>
+                            </div>
+            <form id="findLessonForm">
+                <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+                    <div class="form-group" style="flex: 1;">
+                        <label>Subject</label>
+                        <select id="findLessonSubject">
+                            <option value="">All</option>
+                            <option value="Mathematics">Mathematics</option>
+                            <option value="Physics">Physics</option>
+                            <option value="Chemistry">Chemistry</option>
+                            <option value="English">English</option>
+                            <option value="Computer Science">Computer Science</option>
+                            <option value="Biology">Biology</option>
+                            <option value="Economics">Economics</option>
+                        </select>
+                                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label>Tutor</label>
+                        <select id="findLessonTutor">
+                            <option value="">All</option>
+                        </select>
+                                    </div>
+                    <button type="submit" class="btn btn-primary" style="align-self: end;">Search</button>
+                                </div>
+            </form>
+            <div id="findLessonResults" style="max-height: 400px; overflow-y: auto;"></div>
+                            </div>
+                            </div>
+
+    <script>
+        // Sample data
+        const learnerStats = {
+            totalLessons: 24,
+            completedLessons: 18,
+            upcomingLessons: 4,
+            avgGPA: 3.7,
+            studyHours: 48
+        };
+        const upcomingLessons = [
+            {
+                id: 1,
+                title: 'Calculus I',
+                subject: 'Mathematics',
+                tutor: 'Dr. Smith',
+                time: 'Today 14:00 - 15:30',
+                room: 'A201',
+                status: 'Upcoming',
+                badge: 'Today'
+            },
+            {
+                id: 2,
+                title: 'Physics - Mechanics',
+                subject: 'Physics',
+                tutor: 'Ms. Linh',
+                time: 'Tomorrow 09:00 - 10:00',
+                room: 'B102',
+                status: 'Upcoming',
+                badge: 'Tomorrow'
+            },
+            {
+                id: 3,
+                title: 'English for Academic Purposes',
+                subject: 'English',
+                tutor: 'Mr. John',
+                time: 'Tomorrow 13:00 - 14:30',
+                room: 'C303',
+                status: 'Upcoming',
+                badge: 'Tomorrow'
+            }
+        ];
+
+        const availableLessons = [
+            { id: 1, subject: 'Calculus I', tutor: 'Dr. Smith', time: 'Mon, 8:00 - 9:30' },
+            { id: 2, subject: 'Linear Algebra', tutor: 'Ms. Linh', time: 'Mon, 10:00 - 11:30' },
+            { id: 3, subject: 'Physics - Mechanics', tutor: 'Mr. John', time: 'Tue, 13:00 - 14:30' },
+            { id: 4, subject: 'English for Academic Purposes', tutor: 'Ms. Hoa', time: 'Tue, 15:00 - 16:30' },
+            { id: 5, subject: 'Organic Chemistry', tutor: 'Mr. Nam', time: 'Wed, 8:00 - 9:30' },
+            { id: 6, subject: 'Microeconomics', tutor: 'Dr. Smith', time: 'Wed, 10:00 - 11:30' },
+            { id: 7, subject: 'Data Structures', tutor: 'Ms. Linh', time: 'Thu, 13:00 - 14:30' },
+            { id: 8, subject: 'Marketing Principles', tutor: 'Mr. John', time: 'Thu, 15:00 - 16:30' }
+        ];
+
+        // Menu navigation
+        const menuLinks = document.querySelectorAll('.sidebar-menu a');
+        menuLinks.forEach(link => {
+            link.onclick = function(e) {
+                e.preventDefault();
+                menuLinks.forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+                const href = link.getAttribute('href');
+                switch(href) {
+                    case '#dashboard':
+                        renderDashboard();
+                        break;
+                    case '#apply-tutor':
+                        openApplyTutorModal();
+                        break;
+                    case '#find-lesson':
+                        openFindLessonModal();
+                        break;
+                    case '#my-schedule':
+                        renderMySchedule();
+                        break;
+                    case '#profile':
+                        renderProfile();
+                        break;
+                    case '#logout':
+                        window.location.href = 'login.html';
+                        break;
+                }
+            };
+        });
+        // Profile menu toggle
+        function toggleProfileMenu() {
+            const menu = document.getElementById('profileMenu');
+            menu.classList.toggle('active');
+        }
+        document.body.addEventListener('click', function(e) {
+            if (!e.target.closest('.header-profile')) {
+                document.getElementById('profileMenu').classList.remove('active');
+            }
+        });
+        // Dashboard render
+        function renderDashboard() {
+            const content = `
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-book-open"></i></div>
+                        <div class="stat-value">${learnerStats.totalLessons}</div>
+                        <div class="stat-label">Total Lessons</div>
+                                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-calendar-alt"></i></div>
+                        <div class="stat-value">${learnerStats.upcomingLessons}</div>
+                        <div class="stat-label">Upcoming Sessions</div>
+                                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                        <div class="stat-value">${learnerStats.studyHours}h</div>
+                        <div class="stat-label">Study Hours</div>
+                                </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-graduation-cap"></i></div>
+                        <div class="stat-value">${learnerStats.avgGPA}</div>
+                        <div class="stat-label">Average GPA</div>
+                            </div>
+                            </div>
+                <div class="calendar-section">
+                    <div class="calendar-title">Weekly Schedule</div>
+                    <div class="calendar-grid">
+                        ${['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map(day => `
+                            <div class="calendar-day">
+                                <div class="calendar-day-label">${day}</div>
+                                ${getScheduleForDay(day).map(lesson => `
+                                    <div class="calendar-event" onclick="showLessonDetail('${lesson.title}', '${day}', '${lesson.time}')">
+                                        <div class="calendar-event-title">${lesson.title}</div>
+                                        <div class="calendar-event-time">${lesson.time}</div>
+                </div>
+                                `).join('') || '<div style="color: #bbb; font-size: 0.9rem; margin-top: 8px;">No lessons</div>'}
+                                    </div>
+                        `).join('')}
+                                    </div>
+                                </div>
+                <div class="upcoming-section">
+                    <div class="upcoming-title">Upcoming Lessons</div>
+                    ${upcomingLessons.map(lesson => `
+                        <div class="lesson-card">
+                            <div class="lesson-main">
+                                <div class="subject-img">
+                                    <i class="fas fa-${getSubjectIcon(lesson.subject)}"></i>
+                            </div>
+                                <div class="lesson-info">
+                                    <div class="lesson-header">
+                                        <span class="lesson-title">${lesson.title}</span>
+                                        <span class="lesson-badge ${lesson.badge.toLowerCase()}">${lesson.badge}</span>
+                                    </div>
+                                    <div class="lesson-time">${lesson.time}</div>
+                                    <div class="lesson-tutor">Tutor: ${lesson.tutor} | Room: ${lesson.room}</div>
+                                    </div>
+                                </div>
+                            <div class="lesson-actions">
+                                <button class="register-btn" onclick="joinLesson(${lesson.id})">
+                                    <i class="bi bi-camera-video"></i> Join
+                                </button>
+                                <button class="reschedule-btn" onclick="rescheduleLesson(${lesson.id})">Reschedule</button>
+                            </div>
+                            </div>
+                    `).join('')}
+                </div>
+            `;
+            document.getElementById('learnerMainContent').innerHTML = content;
+        }
+
+        // State tuần hiện tại
+        let currentWeekStart = new Date(2024, 7, 1); // 08/01/2024 (tháng 7 vì JS tính từ 0)
+
+        function formatWeekRange(date) {
+            const start = new Date(date);
+            const end = new Date(date);
+            end.setDate(start.getDate() + 4);
+            const pad = n => n.toString().padStart(2, '0');
+            return `${pad(start.getMonth()+1)}/${pad(start.getDate())}-${pad(end.getMonth()+1)}/${pad(end.getDate())}`;
+        }
+
+        function renderMySchedule() {
+            // Dữ liệu mẫu
+            const week = formatWeekRange(currentWeekStart);
+            // Tạo mảng 7 ngày từ currentWeekStart, sau đó sắp xếp lại để Monday lên đầu
+            let days = Array.from({length: 7}, (_, i) => {
+                const d = new Date(currentWeekStart);
+                d.setDate(d.getDate() + i);
+                const colors = ['#e3ecfa','#e3fae3','#fae3e3','#f9f7e3','#fae3f7','#fbeee6','#ffe0e6'];
+                return {
+                    label: d.toLocaleDateString('en-US', { weekday: 'long' }),
+                    date: `${(d.getMonth()+1).toString().padStart(2,'0')}/${d.getDate().toString().padStart(2,'0')}`,
+                    color: colors[i],
+                    dayIndex: d.getDay() // 0: Sunday, 1: Monday, ...
+                };
+            });
+            // Sắp xếp lại để Monday (dayIndex=1) lên đầu, Sunday (dayIndex=0) cuối cùng
+            days.sort((a, b) => {
+                const order = [1,2,3,4,5,6,0];
+                return order.indexOf(a.dayIndex) - order.indexOf(b.dayIndex);
+            });
+            // Mã icon cho từng môn
+            const subjectIcons = {
+                'Math': 'fa-square-root-alt',
+                'Science': 'fa-flask',
+                'Literacy': 'fa-book',
+                'History': 'fa-landmark'
+            };
+            const timeSlots = [
+                { time: '06:00–10:00', lessons: [
+                    { subject: 'Math' }, { subject: 'Science' }, {}, {}, { subject: 'Math' } ]},
+                { time: '10:00–14:00', lessons: [
+                    {}, { subject: 'Literacy' }, { subject: 'Science' }, {}, {} ]},
+                { time: '14:00–18:00', lessons: [
+                    { subject: 'History' }, {}, { subject: 'Math' }, { subject: 'Science' }, {} ]},
+                { time: '18:00–22:00', lessons: [
+                    {}, {}, {}, { subject: 'Literacy' }, { subject: 'History' } ]}
+            ];
+            let html = `
+                <div style="font-size:1.5rem;font-weight:700;margin-bottom:18px;color:var(--main-color);display:flex;align-items:center;gap:18px;">
+                    <span><i class='fas fa-calendar-week'></i> Weekly Lesson Plan</span>
+                    <div class='week-nav-group'>
+                        <button class='week-nav-btn' onclick='changeWeek(-1)' title='Previous week'><i class="fas fa-chevron-left"></i></button>
+                        <span style='font-size:1.1rem;font-weight:500;color:#222;min-width:120px;display:inline-block;text-align:center;'>Week of: <span style='color:var(--main-color);font-weight:700;'>${week}</span></span>
+                        <button class='week-nav-btn' onclick='changeWeek(1)' title='Next week'><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
+                <div style='overflow-x:auto;'>
+                <table class='weekly-lesson-table'>
+                    <thead>
+                        <tr>
+                            <th style='background:#fffbe6;color:#222;font-weight:700;'>TIME</th>
+                            ${days.map(day => `<th style='background:${day.color};color:#1976d2;font-weight:700;'>${day.label}<br><span style='font-size:0.95rem;color:#555;'>${day.date}</span></th>`).join('')}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${timeSlots.map(slot => `
+                            <tr>
+                                <td style='font-weight:600;color:#1976d2;background:#f7fafd;'>${slot.time}</td>
+                                ${slot.lessons.map((lesson, idx) => `
+                                    <td style='background:#fff;color:#333;min-width:140px;'>
+                                        ${lesson.subject ? `
+                                            <div class='lesson-card-modern'>
+                                                <div class='lesson-card-header'>
+                                                    <i class='fas ${subjectIcons[lesson.subject] || 'fa-book'} lesson-card-icon'></i>
+                                                    <span class='lesson-card-title'>${lesson.subject}</span>
+    </div>
+                                                <div class='lesson-card-actions'>
+                                                    <button class='join-btn-modern' onclick="window.location.href='lesson.html'">
+                                                        <i class='bi bi-camera-video'></i> Join
+                                                    </button>
+                                                    <button class='reschedule-btn-modern' onclick="openRescheduleModal('${lesson.subject}','${slot.time}','${days[idx]?.label || ''}')">
+                                                        <i class='fas fa-calendar-alt'></i> Reschedule
+                                                    </button>
+        </div>
+    </div>
+                                        ` : ''}
+                                    </td>
+                                `).join('')}
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+                <div id='rescheduleModal' class='modal-reschedule-bg' style='display:none;'>
+                    <div class='modal-reschedule'>
+                        <div class='modal-reschedule-title'>Reschedule / Cancel Lesson</div>
+                        <div class='modal-reschedule-info' id='modalRescheduleInfo'></div>
+                        <textarea id='rescheduleReason' class='modal-reschedule-textarea' placeholder='Enter reason for reschedule or cancellation...'></textarea>
+                        <div class='modal-reschedule-actions'>
+                            <button class='modal-btn' onclick='sendRescheduleRequest()'>Send</button>
+                            <button class='modal-btn cancel' onclick='closeRescheduleModal()'>Close</button>
+        </div>
+                        <div id='rescheduleMsg' class='modal-reschedule-msg'></div>
+    </div>
+                </div>
+                <style>
+                .week-nav-group { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+                .week-nav-btn {
+                    background: #e3f2fd;
+                    border: none;
+                    border-radius: 50%;
+                    width: 36px; height: 36px;
+                    display: flex; align-items: center; justify-content: center;
+                    color: #1976d2;
+                    font-size: 1.2rem;
+                    cursor: pointer;
+                    box-shadow: 0 2px 8px rgba(33,150,243,0.07);
+                    transition: background 0.18s, color 0.18s;
+                }
+                .week-nav-btn:hover { background: #1976d2; color: #fff; }
+                </style>
+            `;
+            document.getElementById('learnerMainContent').innerHTML = html;
+        }
+
+        function changeWeek(offset) {
+            currentWeekStart.setDate(currentWeekStart.getDate() + offset * 7);
+            renderMySchedule();
+        }
+
+        // Modal logic cho Reschedule
+        function openRescheduleModal(subject, time, day) {
+            document.getElementById('rescheduleModal').style.display = 'flex';
+            document.getElementById('modalRescheduleInfo').innerHTML = `<b>Subject:</b> ${subject} <b>Time:</b> ${time} <b>Day:</b> ${day}`;
+            document.getElementById('rescheduleReason').value = '';
+            document.getElementById('rescheduleMsg').innerText = '';
+        }
+        function closeRescheduleModal() {
+            document.getElementById('rescheduleModal').style.display = 'none';
+        }
+        function sendRescheduleRequest() {
+            const reason = document.getElementById('rescheduleReason').value.trim();
+            if (!reason) {
+                document.getElementById('rescheduleMsg').innerText = 'Please enter a reason.';
+                return;
+            }
+            document.getElementById('rescheduleMsg').innerText = 'Your request has been sent to the tutor!';
+            setTimeout(closeRescheduleModal, 1500);
+        }
+
+        function renderProfile() {
+            const content = `
+                <div class="section-title">Student Profile</div>
+                <div class="chart-section" style="max-width: 600px;">
+                    <div style="display: flex; gap: 24px; margin-bottom: 24px;">
+                        <div style="width: 100px; height: 100px; background: var(--main-gradient); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem;">
+                            <i class="fas fa-user-graduate"></i>
+                </div>
+                        <div style="flex: 1;">
+                            <h2 style="margin: 0 0 8px 0;">Nguyen Van A</h2>
+                            <div style="color: #666; margin-bottom: 4px;">Student ID: 12345678</div>
+                            <div style="color: #666; margin-bottom: 4px;">Email: nguyenvana@vlu.edu.vn</div>
+                            <div style="color: #666; margin-bottom: 4px;">Class: K25CNTT</div>
+                            <div style="color: #666;">Date of Birth: May 12, 2003</div>
+                </div>
+        </div>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                        <div style="background: #f9f9f9; padding: 16px; border-radius: 8px;">
+                            <div style="font-weight: 600; color: var(--main-color);">Academic Performance</div>
+                            <div style="margin-top: 8px;">
+                                <div>GPA: 3.8/4.0</div>
+                                <div>Completed Credits: 85/120</div>
+                                <div>Current Semester: 6</div>
+    </div>
+            </div>
+                        <div style="background: #f9f9f9; padding: 16px; border-radius: 8px;">
+                            <div style="font-weight: 600; color: var(--main-color);">Learning Statistics</div>
+                            <div style="margin-top: 8px;">
+                                <div>Total Study Hours: 248h</div>
+                                <div>Lessons Completed: 18</div>
+                                <div>Average Rating: 4.6/5</div>
+        </div>
+    </div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('learnerMainContent').innerHTML = content;
+        }
+
+        // Modal functions
+        function openApplyTutorModal() {
+            document.getElementById('applyTutorModal').style.display = 'flex';
+        }
+
+        function closeApplyTutorModal() {
+            document.getElementById('applyTutorModal').style.display = 'none';
+        }
+
+        function openFindLessonModal() {
+            document.getElementById('findLessonModal').style.display = 'flex';
+            renderFindLessonResults(availableLessons);
+            updateTutorDropdown();
+        }
+
+        function closeFindLessonModal() {
+            document.getElementById('findLessonModal').style.display = 'none';
+        }
+
+        // Form handlers
+        document.getElementById('tutorApplyForm').onsubmit = function(e) {
+            e.preventDefault();
+            document.getElementById('tutorApplyMsg').textContent = 'Application submitted successfully! You will be notified once reviewed.';
+            setTimeout(() => {
+                closeApplyTutorModal();
+                document.getElementById('tutorApplyMsg').textContent = '';
+            }, 1800);
+        };
+
+        document.getElementById('findLessonForm').onsubmit = function(e) {
+            e.preventDefault();
+            const subject = document.getElementById('findLessonSubject').value;
+            const tutor = document.getElementById('findLessonTutor').value;
+            
+            const filtered = availableLessons.filter(lesson => {
+                return (!subject || lesson.subject === subject) &&
+                       (!tutor || lesson.tutor === tutor);
+            });
+            
+            renderFindLessonResults(filtered);
+        };
+
+        // Helper functions
+        function getSubjectIcon(subject) {
+            const icons = {
+                'Mathematics': 'calculator',
+                'Physics': 'atom',
+                'Chemistry': 'flask',
+                'English': 'language',
+                'Computer Science': 'laptop-code',
+                'Biology': 'dna',
+                'Economics': 'chart-line'
+            };
+            return icons[subject] || 'book';
+        }
+
+        function getScheduleForDay(day) {
+            const schedule = {
+                'Monday': [
+                    { title: 'Mathematics', time: '08:00 - 09:30' },
+                    { title: 'Physics', time: '10:00 - 11:30' }
+                ],
+                'Tuesday': [
+                    { title: 'Computer Science', time: '09:00 - 10:30' }
+                ],
+                'Wednesday': [
+                    { title: 'English', time: '13:00 - 14:30' },
+                    { title: 'Biology', time: '15:00 - 16:30' }
+                ],
+                'Thursday': [],
+                'Friday': [
+                    { title: 'Chemistry', time: '10:00 - 11:30' }
+                ],
+                'Saturday': [
+                    { title: 'Programming', time: '08:30 - 10:00' }
+                ],
+                'Sunday': []
+            };
+            return schedule[day] || [];
+        }
+
+        function renderFindLessonResults(lessons) {
+            const content = lessons.length ? lessons.map(lesson => `
+                <div class="lesson-card">
+                    <div class="lesson-main">
+                        <div class="subject-img">
+                            <i class="fas fa-${getSubjectIcon(lesson.subject)}"></i>
+                </div>
+                        <div class="lesson-info">
+                            <div class="lesson-title">${lesson.subject}</div>
+                            <div class="lesson-tutor">Tutor: ${lesson.tutor} | Time: ${lesson.time}</div>
+                </div>
+                    </div>
+                    <div class="lesson-actions">
+                        <button class="register-btn" onclick="registerForLesson(${lesson.id})">Register</button>
+                </div>
+                </div>
+            `).join('') : '<div style="text-align: center; color: #888; padding: 24px;">No lessons found.</div>';
+            
+            document.getElementById('findLessonResults').innerHTML = content;
+        }
+
+        function updateTutorDropdown() {
+            const subject = document.getElementById('findLessonSubject').value;
+            const tutors = [...new Set(availableLessons
+                .filter(l => !subject || l.subject === subject)
+                .map(l => l.tutor))];
+            
+            document.getElementById('findLessonTutor').innerHTML = 
+                '<option value="">All</option>' + 
+                tutors.map(t => `<option value="${t}">${t}</option>`).join('');
+        }
+
+        function joinLesson(lessonId) {
+            window.location.href = 'lesson.html';
+        }
+
+        function rescheduleLesson(lessonId) {
+            alert('Reschedule request sent to tutor!');
+        }
+
+        function registerForLesson(lessonId) {
+            alert('Successfully registered for the lesson!');
+            closeFindLessonModal();
+        }
+
+        function showLessonDetail(title, day, time) {
+            alert(`Lesson: ${title}\nDay: ${day}\nTime: ${time}`);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            renderDashboard();
+            
+            // Update tutor dropdown when subject changes
+            document.getElementById('findLessonSubject').onchange = updateTutorDropdown;
+
+            const certificatesSection = document.getElementById('certificates-section');
+            const addCertificateBtn = document.getElementById('addCertificateBtn');
+                function addCertificateInput() {
+                    const div = document.createElement('div');
+                    div.className = 'certificate-input';
+                    div.style.display = 'flex';
+                    div.style.alignItems = 'center';
+                    div.style.gap = '8px';
+                    div.style.marginBottom = '6px';
+                    div.innerHTML = `
+                    <input type="text" name="certificate_name[]" placeholder="Certificate Name" style="flex:1;">
+                    <input type="file" name="certificate_file[]" style="flex:2;">
+                        <button type="button" class="remove-certificate-btn" title="Remove" style="background:none;border:none;color:#b11f24;font-size:1.2rem;cursor:pointer;"><i class="fas fa-times-circle"></i></button>
+                    `;
+                    div.querySelector('.remove-certificate-btn').onclick = function() {
+                        certificatesSection.removeChild(div);
+                    if(certificatesSection.childElementCount === 0) addCertificateInput();
+                    };
+                    certificatesSection.appendChild(div);
+                }
+                addCertificateBtn.onclick = addCertificateInput;
+                // Nếu chưa có dòng nào thì thêm mặc định 1 dòng
+                if(certificatesSection.childElementCount === 0) addCertificateInput();
+        });
+
+        function renderMyScheduleModal() {
+            // Dữ liệu mẫu và logic tuần như trước
+            const week = formatWeekRange(currentWeekStart);
+            // Tạo mảng 7 ngày từ currentWeekStart, sau đó sắp xếp lại để Monday lên đầu
+            let days = Array.from({length: 7}, (_, i) => {
+                const d = new Date(currentWeekStart);
+                d.setDate(d.getDate() + i);
+                const colors = ['#e3ecfa','#e3fae3','#fae3e3','#f9f7e3','#fae3f7','#fbeee6','#ffe0e6'];
+                return {
+                    label: d.toLocaleDateString('en-US', { weekday: 'long' }),
+                    date: `${(d.getMonth()+1).toString().padStart(2,'0')}/${d.getDate().toString().padStart(2,'0')}`,
+                    color: colors[i],
+                    dayIndex: d.getDay()
+                };
+            });
+            days.sort((a, b) => {
+                const order = [1,2,3,4,5,6,0];
+                return order.indexOf(a.dayIndex) - order.indexOf(b.dayIndex);
+            });
+            const subjectIcons = {
+                'Math': 'fa-square-root-alt',
+                'Science': 'fa-flask',
+                'Literacy': 'fa-book',
+                'History': 'fa-landmark'
+            };
+            const timeSlots = [
+                { time: '06:00–10:00', lessons: [
+                    { subject: 'Math' }, { subject: 'Science' }, {}, {}, { subject: 'Math' } ]},
+                { time: '10:00–14:00', lessons: [
+                    {}, { subject: 'Literacy' }, { subject: 'Science' }, {}, {} ]},
+                { time: '14:00–18:00', lessons: [
+                    { subject: 'History' }, {}, { subject: 'Math' }, { subject: 'Science' }, {} ]},
+                { time: '18:00–22:00', lessons: [
+                    {}, {}, {}, { subject: 'Literacy' }, { subject: 'History' } ]}
+            ];
+            let html = `
+                <div class='myschedule-modal-bg' id='myscheduleModalBg' style='display:flex;'>
+                  <div class='myschedule-modal'>
+                    <button class='myschedule-modal-close' onclick='closeMyScheduleModal()' title='Close'>&times;</button>
+                    <div style="font-size:1.5rem;font-weight:700;margin-bottom:18px;color:var(--main-color);display:flex;align-items:center;gap:18px;">
+                        <span><i class='fas fa-calendar-week'></i> Weekly Lesson Plan</span>
+                        <div class='week-nav-group'>
+                            <button class='week-nav-btn' onclick='changeWeek(-1)' title='Previous week'><i class="fas fa-chevron-left"></i></button>
+                            <span style='font-size:1.1rem;font-weight:500;color:#222;min-width:120px;display:inline-block;text-align:center;'>Week of: <span style='color:var(--main-color);font-weight:700;'>${week}</span></span>
+                            <button class='week-nav-btn' onclick='changeWeek(1)' title='Next week'><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                </div>
+                    <div style='overflow-x:auto;'>
+                    <table class='weekly-lesson-table'>
+                        <thead>
+                            <tr>
+                                <th style='background:#fffbe6;color:#222;font-weight:700;'>TIME</th>
+                                ${days.map(day => `<th style='background:${day.color};color:#1976d2;font-weight:700;'>${day.label}<br><span style='font-size:0.95rem;color:#555;'>${day.date}</span></th>`).join('')}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${timeSlots.map(slot => `
+                                <tr>
+                                    <td style='font-weight:600;color:#1976d2;background:#f7fafd;'>${slot.time}</td>
+                                    ${slot.lessons.map((lesson, idx) => `
+                                        <td style='background:#fff;color:#333;min-width:140px;'>
+                                            ${lesson.subject ? `
+                                                <div class='lesson-card-modern'>
+                                                    <div class='lesson-card-header'>
+                                                        <i class='fas ${subjectIcons[lesson.subject] || 'fa-book'} lesson-card-icon'></i>
+                                                        <span class='lesson-card-title'>${lesson.subject}</span>
+                                                    </div>
+                                                    <div class='lesson-card-actions'>
+                                                        <button class='join-btn-modern' onclick="window.location.href='lesson.html'">
+                                                            <i class='bi bi-camera-video'></i> Join
+                                                        </button>
+                                                        <button class='reschedule-btn-modern' onclick="openRescheduleModal('${lesson.subject}','${slot.time}','${days[idx]?.label || ''}')">
+                                                            <i class='fas fa-calendar-alt'></i> Reschedule
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            ` : ''}
+                                        </td>
+                                    `).join('')}
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                    </div>
+                  </div>
+                </div>
+                <style>
+                .myschedule-modal-bg {
+                  position: fixed; left: 0; top: 0; width: 100vw; height: 100vh;
+                  background: rgba(33,150,243,0.13); z-index: 2000;
+                  display: flex; align-items: center; justify-content: center;
+                }
+                .myschedule-modal {
+                  background: #fff; border-radius: 18px; box-shadow: 0 4px 32px rgba(33,150,243,0.18);
+                  padding: 32px 28px 24px 28px; min-width: 320px; max-width: 98vw; width: auto;
+                  max-height: 90vh; overflow-y: auto; display: flex; flex-direction: column;
+                  position: relative;
+                }
+                .myschedule-modal-close {
+                  position: absolute; top: 14px; right: 18px; background: none; border: none; font-size: 2rem; color: #b11f24; cursor: pointer; z-index: 10;
+                  transition: color 0.18s;
+                }
+                .myschedule-modal-close:hover { color: #1976d2; }
+                .weekly-lesson-table { border-collapse: separate; border-spacing: 0; width: 100%; margin-top: 8px; background: #fff; border-radius: 14px; overflow: hidden; box-shadow: 0 2px 12px rgba(33,150,243,0.07); }
+                .weekly-lesson-table th, .weekly-lesson-table td { border: 1.5px solid #e3e3e3; padding: 8px 4px; text-align: left; font-size: 0.95rem; vertical-align: top; min-width: 80px; }
+                .weekly-lesson-table th { text-align: center; font-size: 1rem; letter-spacing: 0.5px; }
+                .weekly-lesson-table tr:hover td { background: #f0f7ff; }
+                .weekly-lesson-table td { position: relative; overflow: visible; height: auto; }
+                .lesson-card-modern {
+                    background: #e3f2fd;
+                    border-radius: 12px;
+                    box-shadow: 0 2px 8px rgba(33,150,243,0.10);
+                    padding: 10px 8px 8px 8px;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 8px;
+                    margin: 4px 0;
+                    min-width: 60px;
+                    width: 100%;
+                    max-width: 160px;
+                }
+                .lesson-card-header {
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
+                    font-weight: 700;
+                    color: #1976d2;
+                    font-size: 0.98rem;
+                }
+                .lesson-card-icon {
+                    font-size: 1.1rem;
+                    color: #2196f3;
+                }
+                .lesson-card-actions {
+                    display: flex;
+                    gap: 8px;
+                    margin-top: 2px;
+                }
+                .join-btn-modern {
+                    background: #2196f3;
+                    color: #fff;
+                    border: none;
+                    border-radius: 8px;
+                    padding: 6px 12px;
+                    font-size: 0.92rem;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: background 0.18s;
+                    display: flex; align-items: center; gap: 4px;
+                    box-shadow: 0 1px 4px rgba(33,150,243,0.10);
+                }
+                .join-btn-modern:hover { background: #1976d2; }
+                .reschedule-btn-modern {
+                    background: #ffe082;
+                    color: #b11f24;
+                    border: none;
+                    border-radius: 8px;
+                    padding: 6px 12px;
+                    font-size: 0.92rem;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: background 0.18s;
+                    display: flex; align-items: center; gap: 4px;
+                    box-shadow: 0 1px 4px rgba(255,224,130,0.13);
+                }
+                .reschedule-btn-modern:hover { background: #ffecb3; color: #b11f24; }
+                .lesson-note-cell {
+                    color: #b11f24;
+                    font-size: 0.95rem;
+                    font-style: italic;
+                    padding: 6px 2px;
+                    font-weight: 500;
+                    background: #fffbe6;
+                    border-radius: 8px;
+                }
+                @media (max-width: 900px) { .weekly-lesson-table th, .weekly-lesson-table td { font-size: 0.9rem; padding: 6px 2px; } }
+                @media (max-width: 600px) {
+                  .myschedule-modal { padding: 8px 1vw 8px 1vw; min-width: 0; }
+                  .lesson-card-modern { min-width: 0; max-width: 100vw; }
+                }
+                </style>
+            `;
+            document.body.insertAdjacentHTML('beforeend', html);
+        }
+        function openMyScheduleModal() {
+            renderMyScheduleModal();
+        }
+        function closeMyScheduleModal() {
+            const modal = document.getElementById('myscheduleModalBg');
+            if (modal) modal.remove();
+        }
+
+        // Thêm nút mở modal vào dashboard-section (chỉ demo, bạn có thể đặt lại vị trí nếu muốn)
+        window.addEventListener('DOMContentLoaded', function() {
+            const btn = document.createElement('button');
+            btn.innerHTML = "<i class='fas fa-calendar-alt'></i> Xem lịch học";
+            btn.className = 'join-btn-modern';
+            btn.style = 'margin: 24px 0 0 0; font-size:1.08rem;';
+            btn.onclick = openMyScheduleModal;
+            const dash = document.querySelector('.dashboard-section');
+            if (dash) dash.insertAdjacentElement('afterbegin', btn);
+        });
+    </script>
+</body>
+</html> 

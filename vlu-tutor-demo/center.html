@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Center Dashboard - VLU Tutor System</title>
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/center-theme.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div style="display: flex; min-height: 100vh; background: #f8fafc;">
+    <div class="sidebar">
+      <div class="user-info">
+        <div class="user-logo"><i class="fas fa-building"></i></div>
+        <div class="user-name">VLU Center</div>
+        <div class="user-id">Center ID: C0001</div>
+      </div>
+      <div class="sidebar-menu">
+        <a href="#dashboard" class="active"><i class="fas fa-chart-line"></i><span>Dashboard</span></a>
+        <a href="#approve-tutor"><i class="fas fa-user-check"></i><span>Approve Tutor</span></a>
+        <a href="#approve-lesson"><i class="fas fa-book-medical"></i><span>Approve Lesson</span></a>
+        <a href="#schedule"><i class="fas fa-calendar-alt"></i><span>Schedule</span></a>
+        <a href="#view-users"><i class="fas fa-users"></i><span>View Users</span></a>
+        <a href="#logout"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
+      </div>
+    </div>
+    <div class="main-content">
+      <div class="header-bar" style="background:#fff;box-shadow:0 2px 12px rgba(245,124,0,0.06);padding:0 32px;height:68px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;">
+        <div class="header-left" style="display:flex;align-items:center;gap:18px;">
+          <div class="header-logo" style="width:44px;height:44px;border-radius:12px;background:var(--main-gradient);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.7rem;font-weight:bold;">
+            <i class="fas fa-building"></i>
+          </div>
+          <span class="header-center" style="font-size:1.15rem;font-weight:600;color:var(--main-color);">Center Dashboard</span>
+        </div>
+        <div class="header-right" style="display:flex;align-items:center;gap:18px;">
+          <div class="header-notify" style="font-size:1.5rem;color:var(--main-color);background:#fff3e0;border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;">
+            <i class="fas fa-bell"></i>
+          </div>
+          <div class="header-avatar" style="width:44px;height:44px;border-radius:50%;background:#fff3e0;display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:var(--main-color);border:2px solid #fff3e0;">
+            <i class="fas fa-building"></i>
+          </div>
+        </div>
+      </div>
+      <div class="dashboard-section" id="centerMainContent" style="max-width:1200px;margin:32px auto 0 auto;padding:0 24px;">
+        <!-- Dynamic content will be rendered here -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Sample data
+    const systemStats = {
+      totalUsers: 245,
+      activeSessions: 58,
+      totalLessons: 1247,
+      monthlyRevenue: 185000,
+      tutorsOnline: 24,
+      studentsActive: 142
+    };
+
+    const weeklySchedule = {
+      Monday: [
+        { title: 'Staff Meeting', time: '09:00', type: 'meeting' },
+        { title: 'System Maintenance', time: '14:00', type: 'maintenance' }
+      ],
+      Tuesday: [
+        { title: 'Tutor Training', time: '10:00', type: 'training' },
+        { title: 'Quality Review', time: '15:30', type: 'review' }
+      ],
+      Wednesday: [
+        { title: 'Monthly Report', time: '11:00', type: 'report' },
+        { title: 'Student Support', time: '16:00', type: 'support' }
+      ],
+      Thursday: [
+        { title: 'Technology Update', time: '09:30', type: 'tech' }
+      ],
+      Friday: [
+        { title: 'Weekly Summary', time: '13:00', type: 'summary' },
+        { title: 'Planning Session', time: '17:00', type: 'planning' }
+      ],
+      Saturday: [],
+      Sunday: []
+    };
+
+    const recentActivities = [
+      { type: 'user', message: 'New tutor registered: Dr. Smith', time: '2 hours ago' },
+      { type: 'lesson', message: '25 lessons completed today', time: '4 hours ago' },
+      { type: 'system', message: 'System backup completed', time: '6 hours ago' },
+      { type: 'payment', message: 'Monthly revenue target achieved', time: '1 day ago' },
+      { type: 'report', message: 'Weekly report generated', time: '2 days ago' }
+    ];
+
+    // Menu navigation
+    const menuLinks = document.querySelectorAll('.sidebar-menu a');
+    menuLinks.forEach(link => {
+      link.onclick = function(e) {
+        e.preventDefault();
+        menuLinks.forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+        
+        const href = link.getAttribute('href');
+        switch(href) {
+          case '#dashboard':
+            renderDashboard();
+            break;
+          case '#approve-tutor':
+            renderApproveTutor();
+            break;
+          case '#approve-lesson':
+            renderApprovalLesson();
+            break;
+          case '#schedule':
+            renderSchedule();
+            break;
+          case '#view-users':
+            renderViewUsers();
+            break;
+          case '#reports':
+            renderReports();
+            break;
+          case '#settings':
+            renderSettings();
+            break;
+          case '#logout':
+            window.location.href = 'login.html';
+            break;
+        }
+      };
+    });
+
+    function renderDashboard() {
+      // Mock data for approve applications
+      const approveApplications = [
+        { name: 'Nguyen Van B', type: 'Tutor Application', submitted: '2 hours ago' },
+        { name: 'Tran Thi C', type: 'Lesson Approval', submitted: '1 day ago' },
+        { name: 'Le Van D', type: 'Tutor Application', submitted: '3 days ago' }
+      ];
+      const content = `
+        <div class="stats-grid" style="margin-bottom:32px;">
+          <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-users"></i></div>
+            <div class="stat-info">
+              <div class="stat-value">${systemStats.totalUsers}</div>
+              <div class="stat-label">Total Users</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-user-clock"></i></div>
+            <div class="stat-info">
+              <div class="stat-value">${systemStats.activeSessions}</div>
+              <div class="stat-label">Active Sessions</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-book-open"></i></div>
+            <div class="stat-info">
+              <div class="stat-value">${systemStats.totalLessons}</div>
+              <div class="stat-label">Total Lessons</div>
+            </div>
+          </div>
+        </div>
+        <div class="chart-section" style="margin-bottom:32px;">
+          <div class="section-title">Weekly Schedule</div>
+          <div class="calendar-container">
+            <div class="calendar-grid">
+              ${Object.entries(weeklySchedule).map(([day, events]) => `
+                <div class="calendar-day">
+                  <div class="calendar-day-label">${day}</div>
+                  ${events.length ? events.map(event => `
+                    <div class="calendar-event">
+                      <div class="calendar-event-title">${event.title}</div>
+                      <div class="calendar-event-time">${event.time}</div>
+                    </div>
+                  `).join('') : '<div style="color: #bbb; font-size: 0.9rem; margin-top: 8px;">No events</div>'}
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+        <div class="approve-section">
+          <div class="section-title">Approve Applications</div>
+          <div style="display: flex; flex-direction: column; gap: 16px;">
+            ${approveApplications.map(app => `
+              <div class="stat-card" style="display:flex;align-items:center;justify-content:space-between;gap:16px;">
+                <div style="display:flex;align-items:center;gap:16px;">
+                  <div class="stat-icon"><i class="fas fa-user-check"></i></div>
+                  <div>
+                    <div style="font-weight:600;">${app.name}</div>
+                    <div style="font-size:0.95rem;color:#888;">${app.type}</div>
+                    <div style="font-size:0.85rem;color:#bbb;">${app.submitted}</div>
+                  </div>
+                </div>
+                <div style="display:flex;gap:8px;">
+                  <button class="btn btn-primary" onclick="alert('Approved!')">Approve</button>
+                  <button class="btn btn-danger" onclick="alert('Rejected!')">Reject</button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+      document.getElementById('centerMainContent').innerHTML = content;
+    }
+
+    function renderStatistics() {
+      renderApproveTutor();
+    }
+
+    function renderApproveTutor() {
+      // Mock data for learners applying as tutor
+      const applications = [
+        {
+          name: 'Nguyen Van B',
+          gpa: 3.7,
+          subjects: ['Mathematics', 'Physics'],
+          certificates: ['IELTS 7.5', 'Olympiad Math'],
+          description: 'I have experience tutoring high school students.',
+          submitted: '2 hours ago'
+        },
+        {
+          name: 'Tran Thi C',
+          gpa: 3.9,
+          subjects: ['English', 'Biology'],
+          certificates: ['TOEIC 900'],
+          description: 'Passionate about teaching and sharing knowledge.',
+          submitted: '1 day ago'
+        },
+        {
+          name: 'Le Van D',
+          gpa: 3.6,
+          subjects: ['Chemistry', 'Mathematics'],
+          certificates: ['Olympiad Chemistry'],
+          description: 'Love to help others understand complex concepts.',
+          submitted: '3 days ago'
+        },
+        {
+          name: 'Pham Thi E',
+          gpa: 3.8,
+          subjects: ['Computer Science'],
+          certificates: ['MOS Specialist'],
+          description: 'Enjoy coding and teaching programming.',
+          submitted: '5 hours ago'
+        },
+        {
+          name: 'Hoang Van F',
+          gpa: 3.5,
+          subjects: ['Economics', 'Mathematics'],
+          certificates: ['IELTS 6.5'],
+          description: 'Economics enthusiast, good at numbers.',
+          submitted: '6 hours ago'
+        },
+        {
+          name: 'Nguyen Thi G',
+          gpa: 3.95,
+          subjects: ['Biology'],
+          certificates: ['Olympiad Biology'],
+          description: 'Top 1 in Biology class.',
+          submitted: '2 days ago'
+        },
+        {
+          name: 'Tran Van H',
+          gpa: 3.4,
+          subjects: ['Physics', 'English'],
+          certificates: ['TOEFL 95'],
+          description: 'Bilingual, love science.',
+          submitted: '4 hours ago'
+        },
+        {
+          name: 'Le Thi I',
+          gpa: 3.85,
+          subjects: ['English', 'Literature'],
+          certificates: ['IELTS 8.0'],
+          description: 'Passionate about languages.',
+          submitted: '3 days ago'
+        },
+        {
+          name: 'Pham Van K',
+          gpa: 3.2,
+          subjects: ['Mathematics'],
+          certificates: ['Olympiad Math'],
+          description: 'Math club member.',
+          submitted: '1 hour ago'
+        },
+        {
+          name: 'Do Thi L',
+          gpa: 3.75,
+          subjects: ['Chemistry', 'Biology'],
+          certificates: ['Olympiad Chemistry', 'Olympiad Biology'],
+          description: 'Love both Chemistry and Biology.',
+          submitted: '5 days ago'
+        }
+      ];
+      const content = `
+        <div class="section-title">Learner Applications for Tutor</div>
+        <div style="display: flex; flex-direction: column; gap: 18px;">
+          ${applications.map((app, idx) => `
+            <div class="stat-card" style="display:flex;align-items:center;justify-content:space-between;gap:16px;">
+              <div>
+                <div style="font-weight:600;font-size:1.1rem;">${app.name}</div>
+                <div style="font-size:0.98rem;color:#888;">GPA: ${app.gpa} | Subjects: ${app.subjects.join(', ')}</div>
+                <div style="font-size:0.9rem;color:#bbb;">${app.submitted}</div>
+              </div>
+              <div style="display:flex;gap:8px;">
+                <button class="btn btn-primary" onclick="showTutorDetailModal(${idx})">Detail</button>
+                <button class="btn btn-success" onclick="alert('Approved!')">Approve</button>
+                <button class="btn btn-danger" onclick="alert('Rejected!')">Reject</button>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+        <div id="tutorDetailModalBg" style="display:none;"></div>
+      `;
+      document.getElementById('centerMainContent').innerHTML = content;
+      window._centerApplications = applications;
+    }
+
+    window.showTutorDetailModal = function(idx) {
+      const app = window._centerApplications[idx];
+      const modalHtml = `
+        <div id="tutorDetailModalBg" class="modal" style="display:flex;z-index:1000;">
+          <div class="modal-content" style="min-width:340px;max-width:98vw;">
+            <div class="modal-header">
+              <h2 class="modal-title">Tutor Application Detail</h2>
+              <button class="modal-close" onclick="closeTutorDetailModal()">×</button>
+            </div>
+            <div class="form-group"><label>Name:</label><div>${app.name}</div></div>
+            <div class="form-group"><label>GPA:</label><div>${app.gpa}</div></div>
+            <div class="form-group"><label>Subjects:</label><div>${app.subjects.join(', ')}</div></div>
+            <div class="form-group"><label>Certificates:</label><div>${app.certificates.join(', ')}</div></div>
+            <div class="form-group"><label>Description:</label><div>${app.description}</div></div>
+            <div class="form-group"><label>Submitted:</label><div>${app.submitted}</div></div>
+            <div style="display:flex;justify-content:flex-end;gap:12px;margin-top:18px;">
+              <button class="btn btn-secondary" onclick="closeTutorDetailModal()">Close</button>
+            </div>
+          </div>
+        </div>
+        <style>.modal{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(33,33,33,0.18);display:flex;align-items:center;justify-content:center;z-index:1000;}.modal-content{background:#fff;border-radius:16px;box-shadow:0 4px 32px rgba(33,33,33,0.13);padding:32px 24px;min-width:340px;max-width:98vw;}.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}.modal-title{font-size:1.3rem;font-weight:700;color:var(--main-color);}.modal-close{background:none;border:none;font-size:1.5rem;color:#b11f24;cursor:pointer;}.form-group{margin-bottom:12px;}.form-group label{font-weight:600;color:#1976d2;display:block;margin-bottom:2px;}</style>
+      `;
+      document.getElementById('tutorDetailModalBg').outerHTML = modalHtml;
+    }
+    window.closeTutorDetailModal = function() {
+      document.getElementById('tutorDetailModalBg').outerHTML = '<div id="tutorDetailModalBg" style="display:none;"></div>';
+    }
+
+    function renderSchedule() {
+      const content = `
+        <div class="section-title">Weekly Schedule</div>
+        <div class="calendar-container">
+          <div class="calendar-grid">
+            ${Object.entries(weeklySchedule).map(([day, events]) => `
+              <div class="calendar-day">
+                <div class="calendar-day-label">${day}</div>
+                ${events.length ? events.map(event => `
+                  <div class="calendar-event" onclick="showEventDetails('${event.title}', '${day}', '${event.time}')">
+                    <div class="calendar-event-title">${event.title}</div>
+                    <div class="calendar-event-time">${event.time}</div>
+                  </div>
+                `).join('') : '<div style="color: #bbb; font-size: 0.9rem; margin-top: 8px;">No events</div>'}
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+      document.getElementById('centerMainContent').innerHTML = content;
+    }
+
+    function renderReports() {
+      const content = `
+        <div class="section-title">Reports</div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+          <div class="stat-card" style="cursor: pointer;" onclick="generateReport('monthly')">
+            <div class="stat-icon"><i class="fas fa-file-alt"></i></div>
+            <div class="stat-info">
+              <div class="stat-value">Monthly</div>
+              <div class="stat-label">Performance Report</div>
+            </div>
+          </div>
+          <div class="stat-card" style="cursor: pointer;" onclick="generateReport('financial')">
+            <div class="stat-icon"><i class="fas fa-chart-pie"></i></div>
+            <div class="stat-info">
+              <div class="stat-value">Financial</div>
+              <div class="stat-label">Revenue Report</div>
+            </div>
+          </div>
+          <div class="stat-card" style="cursor: pointer;" onclick="generateReport('user')">
+            <div class="stat-icon"><i class="fas fa-users"></i></div>
+            <div class="stat-info">
+              <div class="stat-value">User</div>
+              <div class="stat-label">Activity Report</div>
+            </div>
+          </div>
+        </div>
+      `;
+      document.getElementById('centerMainContent').innerHTML = content;
+    }
+
+    function renderSettings() {
+      renderViewUsers();
+    }
+
+    function renderViewUsers() {
+      // Mock data
+      const learners = [
+        { name: 'Nguyen Van A', id: 'L001', email: 'vana@vlu.edu.vn', gpa: 3.8 },
+        { name: 'Tran Thi B', id: 'L002', email: 'thib@vlu.edu.vn', gpa: 3.6 },
+        { name: 'Le Van C', id: 'L003', email: 'vanc@vlu.edu.vn', gpa: 3.7 },
+        { name: 'Pham Thi D', id: 'L004', email: 'thid@vlu.edu.vn', gpa: 3.9 },
+        { name: 'Hoang Van E', id: 'L005', email: 'vane@vlu.edu.vn', gpa: 3.5 },
+        { name: 'Nguyen Thi F', id: 'L006', email: 'thif@vlu.edu.vn', gpa: 3.95 },
+        { name: 'Tran Van G', id: 'L007', email: 'vang@vlu.edu.vn', gpa: 3.4 },
+        { name: 'Le Thi H', id: 'L008', email: 'thih@vlu.edu.vn', gpa: 3.85 },
+        { name: 'Pham Van I', id: 'L009', email: 'vani@vlu.edu.vn', gpa: 3.2 },
+        { name: 'Do Thi J', id: 'L010', email: 'thij@vlu.edu.vn', gpa: 3.75 },
+        { name: 'Nguyen Van K', id: 'L011', email: 'vank@vlu.edu.vn', gpa: 3.6 },
+        { name: 'Tran Thi L', id: 'L012', email: 'thil@vlu.edu.vn', gpa: 3.7 },
+        { name: 'Le Van M', id: 'L013', email: 'vanm@vlu.edu.vn', gpa: 3.8 },
+        { name: 'Pham Thi N', id: 'L014', email: 'thin@vlu.edu.vn', gpa: 3.9 },
+        { name: 'Hoang Van O', id: 'L015', email: 'vano@vlu.edu.vn', gpa: 3.5 }
+      ];
+      const tutors = [
+        { name: 'Nguyen Van P', id: 'T001', email: 'vanp@vlu.edu.vn', major: 'Mathematics' },
+        { name: 'Tran Thi Q', id: 'T002', email: 'thiq@vlu.edu.vn', major: 'Physics' },
+        { name: 'Le Van R', id: 'T003', email: 'vanr@vlu.edu.vn', major: 'English' },
+        { name: 'Pham Thi S', id: 'T004', email: 'this@vlu.edu.vn', major: 'Biology' },
+        { name: 'Hoang Van T', id: 'T005', email: 'vant@vlu.edu.vn', major: 'Chemistry' },
+        { name: 'Nguyen Thi U', id: 'T006', email: 'thiu@vlu.edu.vn', major: 'Computer Science' },
+        { name: 'Tran Van V', id: 'T007', email: 'vanv@vlu.edu.vn', major: 'Economics' },
+        { name: 'Le Thi W', id: 'T008', email: 'thiw@vlu.edu.vn', major: 'Literature' }
+      ];
+      let filter = window._userFilter || 'Learner';
+      const content = `
+        <div class="section-title">User List</div>
+        <div style="margin-bottom:18px;display:flex;gap:12px;align-items:center;">
+          <label style="font-weight:600;">Filter:</label>
+          <select id="userTypeFilter" style="padding:6px 12px;border-radius:8px;">
+            <option value="All" ${filter==='All'?'selected':''}>All</option>
+            <option value="Learner" ${filter==='Learner'?'selected':''}>Learner</option>
+            <option value="Tutor" ${filter==='Tutor'?'selected':''}>Tutor</option>
+          </select>
+        </div>
+        <div style="width:100%;">
+          <table style="width:100%;border-collapse:separate;border-spacing:0 12px;">
+            <thead>
+              <tr style="text-align:left;">
+                <th style="padding:8px 12px;">Name</th>
+                <th style="padding:8px 12px;">ID</th>
+                <th style="padding:8px 12px;">Email</th>
+                ${filter==='Tutor'?'<th style="padding:8px 12px;">Major</th>':filter==='Learner'?'<th style="padding:8px 12px;">GPA</th>':'<th style="padding:8px 12px;">Major/GPA</th>'}
+              </tr>
+            </thead>
+            <tbody>
+              ${filter==='Learner' ? learners.map(l => `
+                <tr style="background:#f8fafc;border-radius:12px;box-shadow:0 2px 8px rgba(245,124,0,0.07);">
+                  <td style="font-weight:600;padding:14px 12px;">${l.name}</td>
+                  <td style="color:#888;padding:14px 12px;">${l.id}</td>
+                  <td style="color:#888;padding:14px 12px;">${l.email}</td>
+                  <td style="color:#1976d2;padding:14px 12px;">${l.gpa}</td>
+                </tr>
+              `).join('') : filter==='Tutor' ? tutors.map(t => `
+                <tr style="background:#f8fafc;border-radius:12px;box-shadow:0 2px 8px rgba(245,124,0,0.07);">
+                  <td style="font-weight:600;padding:14px 12px;">${t.name}</td>
+                  <td style="color:#888;padding:14px 12px;">${t.id}</td>
+                  <td style="color:#888;padding:14px 12px;">${t.email}</td>
+                  <td style="color:#1976d2;padding:14px 12px;">${t.major}</td>
+                </tr>
+              `).join('') :
+              // All: learners + tutors
+              learners.map(l => `
+                <tr style="background:#f8fafc;border-radius:12px;box-shadow:0 2px 8px rgba(245,124,0,0.07);">
+                  <td style="font-weight:600;padding:14px 12px;">${l.name}</td>
+                  <td style="color:#888;padding:14px 12px;">${l.id}</td>
+                  <td style="color:#888;padding:14px 12px;">${l.email}</td>
+                  <td style="color:#1976d2;padding:14px 12px;">GPA: ${l.gpa}</td>
+                </tr>
+              `).join('') + tutors.map(t => `
+                <tr style="background:#f8fafc;border-radius:12px;box-shadow:0 2px 8px rgba(245,124,0,0.07);">
+                  <td style="font-weight:600;padding:14px 12px;">${t.name}</td>
+                  <td style="color:#888;padding:14px 12px;">${t.id}</td>
+                  <td style="color:#888;padding:14px 12px;">${t.email}</td>
+                  <td style="color:#1976d2;padding:14px 12px;">Major: ${t.major}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+      document.getElementById('centerMainContent').innerHTML = content;
+      document.getElementById('userTypeFilter').onchange = function() {
+        window._userFilter = this.value;
+        renderViewUsers();
+      };
+    }
+
+    function getActivityIcon(type) {
+      const icons = {
+        user: 'user-plus',
+        lesson: 'book',
+        system: 'server',
+        payment: 'dollar-sign',
+        report: 'file-alt'
+      };
+      return icons[type] || 'info-circle';
+    }
+
+    function showEventDetails(title, day, time) {
+      alert(`Event: ${title}\nDay: ${day}\nTime: ${time}`);
+    }
+
+    function showAddEventModal() {
+      alert('Add Event functionality would open a modal here');
+    }
+
+    function generateReport(type) {
+      alert(`Generating ${type} report...`);
+    }
+
+    // Thêm hàm renderApprovalLesson
+    function renderApprovalLesson() {
+      // Demo lesson chờ duyệt
+      const pendingLessons = [
+        { tutor: 'Nguyen Van B', subject: 'Mathematics', title: 'Math 101', time: '2024-08-05 08:00', status: 'pending', submitted: '2 hours ago' },
+        { tutor: 'Tran Thi C', subject: 'Physics', title: 'Physics 201', time: '2024-08-06 10:00', status: 'pending', submitted: '1 hour ago' },
+        { tutor: 'Le Van D', subject: 'English', title: 'English 301', time: '2024-08-07 14:00', status: 'pending', submitted: '30 minutes ago' },
+        { tutor: 'Pham Thi E', subject: 'Chemistry', title: 'Chemistry 101', time: '2024-08-08 09:00', status: 'pending', submitted: '10 minutes ago' },
+        { tutor: 'Hoang Van F', subject: 'Biology', title: 'Biology 201', time: '2024-08-09 15:00', status: 'pending', submitted: 'just now' }
+      ];
+      const content = `
+        <div class="section-title">Approve Lesson - Pending Lessons</div>
+        <div style="display: flex; flex-direction: column; gap: 18px;">
+          ${pendingLessons.length ? pendingLessons.map((lesson, idx) => `
+            <div class="stat-card" style="display:flex;align-items:center;justify-content:space-between;gap:16px;">
+              <div>
+                <div style="font-weight:600;font-size:1.1rem;">${lesson.title}</div>
+                <div style="font-size:0.98rem;color:#888;">Subject: ${lesson.subject} | Tutor: ${lesson.tutor}</div>
+                <div style="font-size:0.95rem;color:#888;">Time: ${lesson.time}</div>
+                <div style="font-size:0.9rem;color:#bbb;">${lesson.submitted}</div>
+              </div>
+              <div style="display:flex;gap:8px;">
+                <button class="btn btn-success" onclick="alert('Lesson Approved!')">Approve</button>
+                <button class="btn btn-danger" onclick="alert('Lesson Rejected!')">Reject</button>
+              </div>
+            </div>
+          `).join('') : '<div style="color:#888;text-align:center;">No pending lessons.</div>'}
+        </div>
+      `;
+      document.getElementById('centerMainContent').innerHTML = content;
+    }
+
+    // Initialize dashboard
+    window.addEventListener('DOMContentLoaded', function() {
+      renderDashboard();
+    });
+  </script>
+</body>
+</html> 
