@@ -12,4 +12,4 @@ def color_changer():
     return render_template("color.html", color=color) 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True) 
