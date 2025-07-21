@@ -1,7 +1,30 @@
-<h1>Edit Scores</h1>
-<form method="POST">
-  <label>Math: <input name="math" value="{{ student.math }}"></label><br>
-  <label>Literature: <input name="literature" value="{{ student.literature }}"></label><br>
-  <label>English: <input name="english" value="{{ student.english }}"></label><br>
-  <button type="submit">Save Scores</button>
-</form>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>GPA Sinh viên</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='Style.css') }}">
+</head>
+<body>
+    <h2>Bảng GPA sinh viên</h2>
+    <table border="1">
+        <tr>
+            <th>Họ tên</th>
+            <th>Toán</th>
+            <th>Văn</th>
+            <th>Anh</th>
+            <th>GPA</th>
+        </tr>
+        {% for s in students %}
+        <tr>
+            <td>{{ s.name }}</td>
+            <td>{{ s.math }}</td>
+            <td>{{ s.literature }}</td>
+            <td>{{ s.english }}</td>
+            <td>{{ s.gpa }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <a href="/">Về menu</a>
+</body>
+</html>

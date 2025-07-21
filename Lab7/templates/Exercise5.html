@@ -1,9 +1,29 @@
-<h1>Delete Student</h1>
-<ul>
-  {% for s in students %}
-    <li>
-      {{ s.name }} - {{ s.age }} - {{ s.major }}
-      <a href="/delete/{{ s._id }}" onclick="return confirm('Delete this student?')">🗑️ Delete</a>
-    </li>
-  {% endfor %}
-</ul>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Tìm kiếm chính xác</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='Style.css') }}">
+</head>
+<body>
+    <h2>Tìm kiếm sinh viên theo tên chính xác</h2>
+    <form method="POST">
+        <input name="keyword" placeholder="Nhập họ tên" value="{{ keyword }}" required>
+        <button type="submit">Tìm</button>
+    </form>
+    <table border="1">
+        <tr>
+            <th>Họ tên</th><th>Tuổi</th><th>Ngành</th><th>GPA</th>
+        </tr>
+        {% for s in students %}
+        <tr>
+            <td>{{ s.name }}</td>
+            <td>{{ s.age }}</td>
+            <td>{{ s.major }}</td>
+            <td>{{ s.gpa }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <a href="/">Về menu</a>
+</body>
+</html>
